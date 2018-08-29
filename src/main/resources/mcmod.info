@@ -1,0 +1,17 @@
+[
+	{
+		"modid": "ftbbanners",
+		"name": "FTB Banners",
+		"description": "",
+		"version": "${version}",
+		"mcversion": "${mcversion}",
+		"url": "http://minecraft.curseforge.com/projects/ftb-banners",
+		"updateUrl": "",
+		"authorList": ["LatvianModder"],
+		"credits": "",
+		"logoFile": "assets/ftbbanners/textures/logo.png",
+		"screenshots": [],
+		"parent": "",
+		"dependencies": []
+	}
+]

@@ -1,0 +1,9 @@
+commands.banner.usage=/banner <subcommand>
+commands.banner.create.usage=/banner create <id>
+commands.banner.delete.usage=/banner delete <id>
+commands.banner.list.usage=/banner list
+commands.banner.set.usage=/banner set <id> [alpha]
+commands.banner.rotate.usage=/banner rotate <id> <angle>
+commands.banner.move.usage=/banner move <id> <dim> <x> <y> <z>
+commands.banner.wind.usage=/banner wind <id> <wind>
+commands.banner.size.usage=/banner size <id> <width> <height>
