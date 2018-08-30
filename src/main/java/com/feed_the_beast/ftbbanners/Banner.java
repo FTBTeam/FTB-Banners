@@ -111,6 +111,7 @@ public final class Banner
 		if (height == 0)
 		{
 			file.delete();
+			FTBBannersNetHandler.NET.sendToAll(new MessageSyncOneBanner(this));
 			return;
 		}
 
