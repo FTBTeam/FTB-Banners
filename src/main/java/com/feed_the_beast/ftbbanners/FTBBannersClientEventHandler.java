@@ -32,6 +32,7 @@ public class FTBBannersClientEventHandler
 		}
 
 		Minecraft mc = Minecraft.getMinecraft();
+		int dim = mc.world.provider.getDimension();
 
 		double renderDistanceSq = 128D * 128D;
 
@@ -54,62 +55,53 @@ public class FTBBannersClientEventHandler
 
 		for (Banner banner : BANNERS.values())
 		{
-			if (banner.alpha > 0)
+			double x = banner.x;
+			double y = banner.y;
+			double z = banner.z;
+
+			if (banner.alpha > 0 && banner.dimension == dim && (px - x) * (px - x) + (py - y) * (py - y) + (pz - z) * (pz - z) <= renderDistanceSq)// && frustum.isBoxInFrustum(x - s2, y - s2, z - s2, x + s2, y + s2, z + s2))
 			{
-				if (distSq(banner.x, banner.y, banner.z, px, py, pz) <= renderDistanceSq)// && frustum.isBoxInFrustum(x - s2, y - s2, z - s2, x + s2, y + s2, z + s2))
+				GlStateManager.pushMatrix();
+				GlStateManager.translate(x, y, z);
+				GlStateManager.rotate(banner.rotation, 0F, 1F, 0F);
+
+				double w2 = banner.width / 2D;
+				double h2 = banner.height / -2D;
+
+				if (banner.alpha < 255)
 				{
-					GlStateManager.pushMatrix();
-					GlStateManager.translate(banner.x, banner.y, banner.z);
-					GlStateManager.rotate(banner.rotation, 0F, 1F, 0F);
+					GlStateManager.enableBlend();
 
-					double w2 = banner.width / 2D;
-					double h2 = banner.height / -2D;
-
-					if (banner.alpha < 255)
+					if (banner.alpha < 30)
 					{
-						GlStateManager.enableBlend();
-
-						if (banner.alpha < 30)
-						{
-							GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-						}
+						GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
 					}
-
-					mc.getTextureManager().bindTexture(banner.image);
-					buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-					buffer.pos(-w2, -h2, 0).tex(0, 0).color(255, 255, 255, banner.alpha).endVertex();
-					buffer.pos(-w2, h2, 0).tex(0, 1).color(255, 255, 255, banner.alpha).endVertex();
-					buffer.pos(w2, h2, 0).tex(1, 1).color(255, 255, 255, banner.alpha).endVertex();
-					buffer.pos(w2, -h2, 0).tex(1, 0).color(255, 255, 255, banner.alpha).endVertex();
-					tessellator.draw();
-
-					if (banner.alpha < 255)
-					{
-						GlStateManager.disableBlend();
-
-						if (banner.alpha < 30)
-						{
-							GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-						}
-					}
-
-					GlStateManager.popMatrix();
 				}
+
+				mc.getTextureManager().bindTexture(banner.image);
+				buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				buffer.pos(-w2, -h2, 0).tex(0, 0).color(255, 255, 255, banner.alpha).endVertex();
+				buffer.pos(-w2, h2, 0).tex(0, 1).color(255, 255, 255, banner.alpha).endVertex();
+				buffer.pos(w2, h2, 0).tex(1, 1).color(255, 255, 255, banner.alpha).endVertex();
+				buffer.pos(w2, -h2, 0).tex(1, 0).color(255, 255, 255, banner.alpha).endVertex();
+				tessellator.draw();
+
+				if (banner.alpha < 255)
+				{
+					GlStateManager.disableBlend();
+
+					if (banner.alpha < 30)
+					{
+						GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+					}
+				}
+
+				GlStateManager.popMatrix();
 			}
 		}
 
 		GlStateManager.enableCull();
 		GlStateManager.enableLighting();
 		GlStateManager.popMatrix();
-	}
-
-	public static double sq(double value)
-	{
-		return value * value;
-	}
-
-	public static double distSq(double x1, double y1, double z1, double x2, double y2, double z2)
-	{
-		return (x1 == x2 && y1 == y2 && z1 == z2) ? 0D : (sq(x2 - x1) + sq(y2 - y1) + sq(z2 - z1));
 	}
 }

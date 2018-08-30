@@ -22,8 +22,8 @@ public final class Banner
 	public int dimension = 0;
 	public double x = 0, y = 0, z = 0;
 	public ResourceLocation image = new ResourceLocation("textures/gui/presets/isles.png");
-	public int width = 1;
-	public int height = 1;
+	public float width = 1F;
+	public float height = 1F;
 	public float rotation = 0F;
 	public int alpha = 255;
 	public float wind = 0.1F;
@@ -40,8 +40,8 @@ public final class Banner
 		nbt.setDouble("Y", y);
 		nbt.setDouble("Z", z);
 		nbt.setString("Image", image.toString());
-		nbt.setInteger("Width", width);
-		nbt.setInteger("Height", height);
+		nbt.setFloat("Width", width);
+		nbt.setFloat("Height", height);
 		nbt.setFloat("Rotation", rotation);
 		nbt.setInteger("Alpha", alpha);
 		nbt.setFloat("Wind", wind);
@@ -54,8 +54,8 @@ public final class Banner
 		y = nbt.getDouble("Y");
 		z = nbt.getDouble("Z");
 		image = new ResourceLocation(nbt.getString("Image"));
-		width = nbt.getInteger("Width");
-		height = nbt.getInteger("Height");
+		width = nbt.getFloat("Width");
+		height = nbt.getFloat("Height");
 		rotation = nbt.getFloat("Rotation");
 		alpha = nbt.getInteger("Alpha");
 		wind = nbt.getFloat("Wind");
@@ -68,8 +68,8 @@ public final class Banner
 		data.writeDouble(y);
 		data.writeDouble(z);
 		ByteBufUtils.writeUTF8String(data, image.toString());
-		data.writeByte(width);
-		data.writeByte(height);
+		data.writeFloat(width);
+		data.writeFloat(height);
 		data.writeFloat(rotation);
 		data.writeByte(alpha);
 		data.writeFloat(wind);
@@ -82,8 +82,8 @@ public final class Banner
 		y = data.readDouble();
 		z = data.readDouble();
 		image = new ResourceLocation(ByteBufUtils.readUTF8String(data));
-		width = data.readUnsignedByte();
-		height = data.readUnsignedByte();
+		width = data.readFloat();
+		height = data.readFloat();
 		rotation = data.readFloat();
 		alpha = data.readUnsignedByte();
 		wind = data.readFloat();

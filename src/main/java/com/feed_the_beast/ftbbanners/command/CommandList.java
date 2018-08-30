@@ -35,7 +35,7 @@ public class CommandList extends CommandBannerBase
 			sender.sendMessage(new TextComponentString(banner.id));
 			sender.sendMessage(new TextComponentString(String.format(" - Image: %s", banner.image)));
 			sender.sendMessage(new TextComponentString(String.format(" - Pos: %.2f %.2f %.2f", banner.x, banner.y, banner.z)));
-			sender.sendMessage(new TextComponentString(String.format(" - Size: %d x %d", banner.width, banner.height)));
+			sender.sendMessage(new TextComponentString(String.format(" - Size: %f x %f", banner.width, banner.height)));
 			sender.sendMessage(new TextComponentString(String.format(" - Rotation: %d", (int) banner.rotation)));
 		}
 	}
