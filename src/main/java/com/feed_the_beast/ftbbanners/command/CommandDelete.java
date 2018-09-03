@@ -33,7 +33,7 @@ public class CommandDelete extends CommandBannerBase
 			banner.width = 0;
 			banner.height = 0;
 			banner.alpha = 0;
-			banner.saveAndSend(sender.getEntityWorld());
+			banner.saveAndSend();
 		}
 		else
 		{

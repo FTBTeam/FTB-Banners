@@ -30,7 +30,7 @@ public class CommandRotate extends CommandBannerBase
 		if (banner != null)
 		{
 			banner.rotation = (float) (parseDouble(args[1]) % 360D);
-			banner.saveAndSend(sender.getEntityWorld());
+			banner.saveAndSend();
 		}
 		else
 		{

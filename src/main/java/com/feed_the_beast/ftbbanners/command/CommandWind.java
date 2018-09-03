@@ -30,7 +30,7 @@ public class CommandWind extends CommandBannerBase
 		if (banner != null)
 		{
 			banner.wind = (float) parseDouble(args[1], 0D, 1D);
-			banner.saveAndSend(sender.getEntityWorld());
+			banner.saveAndSend();
 		}
 		else
 		{

@@ -29,7 +29,7 @@ public class CommandCreate extends CommandBannerBase
 			banner.x = pos.x;
 			banner.y = pos.y;
 			banner.z = pos.z;
-			banner.saveAndSend(sender.getEntityWorld());
+			banner.saveAndSend();
 		}
 	}
 }

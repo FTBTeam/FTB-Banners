@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
 import net.minecraft.world.storage.ThreadedFileIOBase;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
@@ -27,6 +26,7 @@ public final class Banner
 	public float rotation = 0F;
 	public int alpha = 255;
 	public float wind = 0.1F;
+	public boolean shouldSave = false;
 
 	public Banner(String _id)
 	{
@@ -104,9 +104,9 @@ public final class Banner
 		return o == this || o != null && id.equals(o.toString());
 	}
 
-	public void saveAndSend(World world)
+	public void save(File folder)
 	{
-		File file = new File(world.getSaveHandler().getWorldDirectory(), "data/ftbbanners/" + id + ".nbt");
+		File file = new File(folder, id + ".nbt");
 
 		if (height == 0)
 		{
@@ -135,7 +135,11 @@ public final class Banner
 
 			return false;
 		});
+	}
 
+	public void saveAndSend()
+	{
+		shouldSave = true;
 		FTBBannersNetHandler.NET.sendToAll(new MessageSyncOneBanner(this));
 	}
 }

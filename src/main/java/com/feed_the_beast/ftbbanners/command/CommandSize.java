@@ -31,7 +31,7 @@ public class CommandSize extends CommandBannerBase
 		{
 			banner.width = (float) parseDouble(args[1], 0.01D, 256D);
 			banner.height = (float) parseDouble(args[2], 0.01D, 256D);
-			banner.saveAndSend(sender.getEntityWorld());
+			banner.saveAndSend();
 		}
 		else
 		{

@@ -45,6 +45,7 @@ public class CommandSet extends CommandBannerBase
 				banner.alpha = parseInt(args[1], 0, 255);
 			}
 
+			banner.shouldSave = true;
 			FTBBannersNetHandler.NET.sendToAll(new MessageToggleBanner(banner.id, banner.alpha));
 		}
 		else

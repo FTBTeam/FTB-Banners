@@ -78,11 +78,20 @@ public class FTBBannersClientEventHandler
 					}
 				}
 
+				double wind1 = 0D;
+				double wind2 = 0D;
+
+				if (banner.wind > 0D)
+				{
+					wind1 = Math.cos(System.currentTimeMillis() * 0.001D) * (banner.wind * banner.height);
+					wind2 = Math.sin(System.currentTimeMillis() * 0.001D) * (banner.wind * banner.height);
+				}
+
 				mc.getTextureManager().bindTexture(banner.image);
 				buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 				buffer.pos(-w2, -h2, 0).tex(0, 0).color(255, 255, 255, banner.alpha).endVertex();
-				buffer.pos(-w2, h2, 0).tex(0, 1).color(255, 255, 255, banner.alpha).endVertex();
-				buffer.pos(w2, h2, 0).tex(1, 1).color(255, 255, 255, banner.alpha).endVertex();
+				buffer.pos(-w2, h2, wind1).tex(0, 1).color(255, 255, 255, banner.alpha).endVertex();
+				buffer.pos(w2, h2, wind2).tex(1, 1).color(255, 255, 255, banner.alpha).endVertex();
 				buffer.pos(w2, -h2, 0).tex(1, 0).color(255, 255, 255, banner.alpha).endVertex();
 				tessellator.draw();
 

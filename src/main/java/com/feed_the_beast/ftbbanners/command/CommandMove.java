@@ -33,7 +33,7 @@ public class CommandMove extends CommandBannerBase
 			banner.x = parseDouble(args[2]);
 			banner.y = parseDouble(args[3]);
 			banner.z = parseDouble(args[4]);
-			banner.saveAndSend(sender.getEntityWorld());
+			banner.saveAndSend();
 		}
 		else
 		{

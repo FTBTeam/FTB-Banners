@@ -31,7 +31,7 @@ public class CommandImage extends CommandBannerBase
 		if (banner != null)
 		{
 			banner.image = new ResourceLocation(args[1]);
-			banner.saveAndSend(sender.getEntityWorld());
+			banner.saveAndSend();
 		}
 		else
 		{
