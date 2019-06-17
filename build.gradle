@@ -35,6 +35,15 @@ minecraft {
 	replaceIn "${mod_reference}"
 }
 
+repositories {
+	mavenLocal()
+	maven { url "https://minecraft.curseforge.com/api/maven/" } //GameStages
+}
+
+dependencies {
+	deobfProvided "game-stages:GameStages:${mc_version}:${gamestages_version}"
+}
+
 processResources {
 	inputs.property "version", project.version
 	inputs.property "mcversion", project.minecraft.version
