@@ -28,7 +28,6 @@ import javax.annotation.Nullable;
  */
 public class BannerBlock extends BlockHorizontal
 {
-	public static final AxisAlignedBB EMPTY_AABB = new AxisAlignedBB(0D, 0D, 0D, 0D, 0D, 0D);
 	private static final Predicate<Entity> PREDICATE = entity -> entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode;
 
 	public BannerBlock()

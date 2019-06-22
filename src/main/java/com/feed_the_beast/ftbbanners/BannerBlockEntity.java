@@ -15,18 +15,21 @@ import net.minecraftforge.fml.common.Loader;
  */
 public class BannerBlockEntity extends TileEntity
 {
-	public ResourceLocation image = new ResourceLocation("textures/gui/presets/isles.png");
+	public static final ResourceLocation DEFAULT_IMAGE = new ResourceLocation("textures/gui/presets/isles.png");
+
+	public ResourceLocation image = DEFAULT_IMAGE;
 	public float width = 1F;
 	public float height = 1F;
 	public float rotation = 0F;
 	public int alpha = 255;
 	public float wind = 0.1F;
+	public float windSpeed = 1F;
 	public boolean glow = false;
 	public String gameStage = "";
 	public boolean culling = false;
-	public double offsetX = 0D;
-	public double offsetY = 0D;
-	public double offsetZ = 0D;
+	public float offsetX = 0F;
+	public float offsetY = 0F;
+	public float offsetZ = 0F;
 	public boolean hover = false;
 
 	public NBTTagCompound write(NBTTagCompound nbt)
@@ -37,12 +40,13 @@ public class BannerBlockEntity extends TileEntity
 		nbt.setFloat("rotation", rotation);
 		nbt.setInteger("alpha", alpha);
 		nbt.setFloat("wind", wind);
+		nbt.setFloat("wind_speed", windSpeed);
 		nbt.setBoolean("glow", glow);
 		nbt.setString("game_stage", gameStage);
 		nbt.setBoolean("culling", culling);
-		nbt.setDouble("offset_x", offsetX);
-		nbt.setDouble("offset_y", offsetY);
-		nbt.setDouble("offset_z", offsetZ);
+		nbt.setFloat("offset_x", offsetX);
+		nbt.setFloat("offset_y", offsetY);
+		nbt.setFloat("offset_z", offsetZ);
 		nbt.setBoolean("hover", hover);
 		return nbt;
 	}
@@ -55,12 +59,18 @@ public class BannerBlockEntity extends TileEntity
 		rotation = nbt.getFloat("rotation");
 		alpha = nbt.getInteger("alpha");
 		wind = nbt.getFloat("wind");
+
+		if (nbt.hasKey("wind_speed"))
+		{
+			windSpeed = nbt.getFloat("wind_speed");
+		}
+
 		glow = nbt.getBoolean("glow");
 		gameStage = nbt.getString("game_stage");
 		culling = nbt.getBoolean("culling");
-		offsetX = nbt.getDouble("offset_x");
-		offsetY = nbt.getDouble("offset_y");
-		offsetZ = nbt.getDouble("offset_z");
+		offsetX = nbt.getFloat("offset_x");
+		offsetY = nbt.getFloat("offset_y");
+		offsetZ = nbt.getFloat("offset_z");
 		hover = nbt.getBoolean("hover");
 	}
 
