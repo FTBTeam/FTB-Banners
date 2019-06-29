@@ -144,6 +144,11 @@ public class BannerBlockEntity extends TileEntity
 
 	private boolean hasGameStage(EntityPlayer player)
 	{
+		if (gameStage.charAt(0) == '!')
+		{
+			return !GameStageHelper.hasStage(player, gameStage.substring(1));
+		}
+
 		return GameStageHelper.hasStage(player, gameStage);
 	}
 }
