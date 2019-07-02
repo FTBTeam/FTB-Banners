@@ -21,7 +21,7 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer<BannerBlockEn
 	{
 		Minecraft mc = Minecraft.getMinecraft();
 
-		float a = banner.getAlpha(mc.player) / 255F * alpha;
+		float a = banner.alpha / 255F * alpha;
 
 		if (a <= 0F)
 		{
@@ -30,23 +30,11 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer<BannerBlockEn
 
 		float lx = 0F, ly = 0F;
 
-		if (banner.glow)
-		{
-			lx = OpenGlHelper.lastBrightnessX;
-			ly = OpenGlHelper.lastBrightnessY;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
-		}
-
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(rx, ry, rz);
 		GlStateManager.disableLighting();
 		RenderHelper.disableStandardItemLighting();
 		GlStateManager.enableTexture2D();
-
-		if (!banner.culling)
-		{
-			GlStateManager.disableCull();
-		}
 
 		GlStateManager.color(1F, 1F, 1F, 1F);
 		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -80,32 +68,51 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer<BannerBlockEn
 
 		GlStateManager.enableBlend();
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0F);
-		mc.getTextureManager().bindTexture(banner.image);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
-		buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-		buffer.pos(-w2, -h2, 0).tex(0, 0).color(1F, 1F, 1F, a).endVertex();
-		buffer.pos(-w2, h2, wind1).tex(0, 1).color(1F, 1F, 1F, a).endVertex();
-		buffer.pos(w2, h2, wind2).tex(1, 1).color(1F, 1F, 1F, a).endVertex();
-		buffer.pos(w2, -h2, 0).tex(1, 0).color(1F, 1F, 1F, a).endVertex();
-		tessellator.draw();
+
+		for (BannerLayer layer : banner.layers)
+		{
+			if (layer.isVisible(mc.player))
+			{
+				if (layer.glow)
+				{
+					lx = OpenGlHelper.lastBrightnessX;
+					ly = OpenGlHelper.lastBrightnessY;
+					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240F, 240F);
+				}
+
+				if (!layer.culling)
+				{
+					GlStateManager.disableCull();
+				}
+
+				mc.getTextureManager().bindTexture(layer.image);
+				buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				buffer.pos(-w2, -h2, 0).tex(0, 0).color(1F, 1F, 1F, a).endVertex();
+				buffer.pos(-w2, h2, wind1).tex(0, 1).color(1F, 1F, 1F, a).endVertex();
+				buffer.pos(w2, h2, wind2).tex(1, 1).color(1F, 1F, 1F, a).endVertex();
+				buffer.pos(w2, -h2, 0).tex(1, 0).color(1F, 1F, 1F, a).endVertex();
+				tessellator.draw();
+
+				if (!layer.culling)
+				{
+					GlStateManager.enableCull();
+				}
+
+				if (layer.glow)
+				{
+					OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
+				}
+			}
+		}
 
 		GlStateManager.disableBlend();
 		GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
 
 		GlStateManager.popMatrix();
 
-		if (!banner.culling)
-		{
-			GlStateManager.enableCull();
-		}
-
 		GlStateManager.enableLighting();
 		GlStateManager.popMatrix();
-
-		if (banner.glow)
-		{
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
-		}
 	}
 }

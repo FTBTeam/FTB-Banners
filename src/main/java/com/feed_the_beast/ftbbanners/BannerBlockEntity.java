@@ -1,32 +1,29 @@
 package com.feed_the_beast.ftbbanners;
 
-import net.darkhax.gamestages.GameStageHelper;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Loader;
+
+import java.util.ArrayList;
 
 /**
  * @author LatvianModder
  */
 public class BannerBlockEntity extends TileEntity
 {
-	public static final ResourceLocation DEFAULT_IMAGE = new ResourceLocation("textures/gui/presets/isles.png");
-
-	public ResourceLocation image = DEFAULT_IMAGE;
+	public BannerLayer[] layers = {new BannerLayer()};
 	public float width = 1F;
 	public float height = 1F;
 	public float rotation = 0F;
 	public int alpha = 255;
 	public float wind = 0.1F;
 	public float windSpeed = 1F;
-	public boolean glow = false;
-	public String gameStage = "";
-	public boolean culling = false;
 	public float offsetX = 0F;
 	public float offsetY = 0F;
 	public float offsetZ = 0F;
@@ -34,16 +31,30 @@ public class BannerBlockEntity extends TileEntity
 
 	public NBTTagCompound write(NBTTagCompound nbt)
 	{
-		nbt.setString("image", image.toString());
+		NBTTagList layerListTag = new NBTTagList();
+
+		for (BannerLayer layer : layers)
+		{
+			NBTTagCompound nbt1 = new NBTTagCompound();
+			nbt1.setString("image", layer.image.toString());
+			nbt1.setBoolean("glow", layer.glow);
+			nbt1.setBoolean("culling", layer.culling);
+
+			if (!layer.gameStage.isEmpty() || Loader.isModLoaded("gamestages"))
+			{
+				nbt1.setString("game_stage", layer.gameStage);
+			}
+
+			layerListTag.appendTag(nbt1);
+		}
+
+		nbt.setTag("layers", layerListTag);
 		nbt.setFloat("width", width);
 		nbt.setFloat("height", height);
 		nbt.setFloat("rotation", rotation);
 		nbt.setInteger("alpha", alpha);
 		nbt.setFloat("wind", wind);
 		nbt.setFloat("wind_speed", windSpeed);
-		nbt.setBoolean("glow", glow);
-		nbt.setString("game_stage", gameStage);
-		nbt.setBoolean("culling", culling);
 		nbt.setFloat("offset_x", offsetX);
 		nbt.setFloat("offset_y", offsetY);
 		nbt.setFloat("offset_z", offsetZ);
@@ -53,7 +64,38 @@ public class BannerBlockEntity extends TileEntity
 
 	public void read(NBTTagCompound nbt)
 	{
-		image = new ResourceLocation(nbt.getString("image"));
+		ArrayList<BannerLayer> layerList = new ArrayList<>();
+		NBTTagList layerListTag = nbt.getTagList("layers", Constants.NBT.TAG_COMPOUND);
+
+		if (layerListTag.isEmpty())
+		{
+			String img = nbt.getString("image");
+
+			if (!img.isEmpty())
+			{
+				BannerLayer layer = new BannerLayer();
+				layer.image = new ResourceLocation(img);
+				layer.glow = nbt.getBoolean("glow");
+				layer.culling = nbt.getBoolean("culling");
+				layer.gameStage = nbt.getString("game_stage");
+				layerList.add(layer);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < layerListTag.tagCount(); i++)
+			{
+				NBTTagCompound nbt1 = layerListTag.getCompoundTagAt(i);
+				BannerLayer layer = new BannerLayer();
+				layer.image = new ResourceLocation(nbt1.getString("image"));
+				layer.glow = nbt1.getBoolean("glow");
+				layer.culling = nbt1.getBoolean("culling");
+				layer.gameStage = nbt1.getString("game_stage");
+				layerList.add(layer);
+			}
+		}
+
+		layers = layerList.toArray(new BannerLayer[0]);
 		width = nbt.getFloat("width");
 		height = nbt.getFloat("height");
 		rotation = nbt.getFloat("rotation");
@@ -65,9 +107,6 @@ public class BannerBlockEntity extends TileEntity
 			windSpeed = nbt.getFloat("wind_speed");
 		}
 
-		glow = nbt.getBoolean("glow");
-		gameStage = nbt.getString("game_stage");
-		culling = nbt.getBoolean("culling");
 		offsetX = nbt.getFloat("offset_x");
 		offsetY = nbt.getFloat("offset_y");
 		offsetZ = nbt.getFloat("offset_z");
@@ -123,32 +162,5 @@ public class BannerBlockEntity extends TileEntity
 	public AxisAlignedBB getRenderBoundingBox()
 	{
 		return INFINITE_EXTENT_AABB;
-	}
-
-	public int getAlpha(EntityPlayer player)
-	{
-		if (player.capabilities.isCreativeMode)
-		{
-			return alpha;
-		}
-		else if (!gameStage.isEmpty() && Loader.isModLoaded("gamestages"))
-		{
-			if (!hasGameStage(player))
-			{
-				return 0;
-			}
-		}
-
-		return alpha;
-	}
-
-	private boolean hasGameStage(EntityPlayer player)
-	{
-		if (gameStage.charAt(0) == '!')
-		{
-			return !GameStageHelper.hasStage(player, gameStage.substring(1));
-		}
-
-		return GameStageHelper.hasStage(player, gameStage);
 	}
 }
