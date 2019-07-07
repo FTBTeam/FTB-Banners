@@ -143,6 +143,12 @@ public class BannerBlock extends BlockHorizontal
 	}
 
 	@Override
+	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity)
+	{
+		return false;
+	}
+
+	@Override
 	@Nullable
 	@Deprecated
 	public RayTraceResult collisionRayTrace(IBlockState blockState, World worldIn, BlockPos pos, Vec3d start, Vec3d end)
