@@ -20,7 +20,9 @@ public class BannerBlockEntity extends TileEntity
 	public BannerLayer[] layers = {new BannerLayer()};
 	public float width = 1F;
 	public float height = 1F;
-	public float rotation = 0F;
+	public float rotationX = 0F;
+	public float rotationY = 0F;
+	public float rotationZ = 0F;
 	public int alpha = 255;
 	public float wind = 0.1F;
 	public float windSpeed = 1F;
@@ -51,7 +53,9 @@ public class BannerBlockEntity extends TileEntity
 		nbt.setTag("layers", layerListTag);
 		nbt.setFloat("width", width);
 		nbt.setFloat("height", height);
-		nbt.setFloat("rotation", rotation);
+		nbt.setFloat("rotation_x", rotationX);
+		nbt.setFloat("rotation_y", rotationY);
+		nbt.setFloat("rotation_z", rotationZ);
 		nbt.setInteger("alpha", alpha);
 		nbt.setFloat("wind", wind);
 		nbt.setFloat("wind_speed", windSpeed);
@@ -98,7 +102,17 @@ public class BannerBlockEntity extends TileEntity
 		layers = layerList.toArray(new BannerLayer[0]);
 		width = nbt.getFloat("width");
 		height = nbt.getFloat("height");
-		rotation = nbt.getFloat("rotation");
+
+		rotationX = nbt.getFloat("rotation_x");
+		rotationY = nbt.getFloat("rotation_y");
+		
+		if(rotationY == 0F)
+		{
+			rotationY = nbt.getFloat("rotation");
+		}
+		
+		rotationZ = nbt.getFloat("rotation_z");
+		
 		alpha = nbt.getInteger("alpha");
 		wind = nbt.getFloat("wind");
 

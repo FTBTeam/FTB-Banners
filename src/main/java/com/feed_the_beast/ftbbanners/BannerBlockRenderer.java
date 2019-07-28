@@ -41,7 +41,9 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer<BannerBlockEn
 		GlStateManager.pushMatrix();
 		GlStateManager.translate(0.5D, 0.5D, 0.5D);
 		GlStateManager.scale(1F, 1F, -1F);
-		GlStateManager.rotate(EnumFacing.byHorizontalIndex(banner.getBlockMetadata()).getHorizontalAngle() + banner.rotation, 0F, 1F, 0F);
+		GlStateManager.rotate(EnumFacing.byHorizontalIndex(banner.getBlockMetadata()).getHorizontalAngle() + banner.rotationY, 0F, 1F, 0F);
+		GlStateManager.rotate(banner.rotationX, 1F, 0F, 0F);
+		GlStateManager.rotate(banner.rotationZ, 0F, 0F, 1F);
 		GlStateManager.translate(banner.offsetX, banner.offsetY, banner.offsetZ);
 
 		double w2 = banner.width / 2D;
