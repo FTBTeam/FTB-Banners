@@ -55,7 +55,7 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer<BannerBlockEn
 		if (banner.wind > 0D)
 		{
 			double ws = banner.windSpeed * 0.001D;
-			double d = System.currentTimeMillis() * ws + banner.getPos().hashCode() * 0.19D;
+			double d = System.currentTimeMillis() * ws + (banner.hover ? 0D : banner.getPos().hashCode() * 0.19D);
 
 			if (banner.hover)
 			{
