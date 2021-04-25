@@ -145,7 +145,6 @@ if (ENV.CURSEFORGE_KEY) {
             changelog = getGitChangelog
             changelogType = 'markdown'
             mainArtifact(jar)
-            addArtifact(sourcesJar)
         }
     }
 }
