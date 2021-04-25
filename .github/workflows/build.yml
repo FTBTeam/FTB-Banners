@@ -71,4 +71,4 @@ jobs:
         # TODO: make this use the artifacts from the previous build step
         run: |
           chmod +x ./gradlew
-          ./gradlew build publish curseforgePublish --stacktrace --no-daemon
+          ./gradlew build publish curseforge --stacktrace --no-daemon
