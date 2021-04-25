@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       norelease:
-        description: 'Do not publish'     
+        description: 'Do not publish'
         required: true
         default: 'false'
 
@@ -34,14 +34,6 @@ jobs:
         run: |
           chmod +x ./gradlew
           ./gradlew build --stacktrace --no-daemon
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: '${{ github.event.repository.name }} Build #${{ github.run_number }}'
-          path: |
-            build/libs/
-            !**/*-shadow.jar
-            !**/*-transformProduction([\w]+).jar
   publish:
     needs: build
     runs-on: ubuntu-latest
@@ -68,7 +60,6 @@ jobs:
           GIT_PREVIOUS_COMMIT: ${{ github.event.before }}
           CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
           SAPS_TOKEN: ${{ secrets.SAPS_TOKEN }}
-        # TODO: make this use the artifacts from the previous build step
         run: |
           chmod +x ./gradlew
           ./gradlew build publish curseforge --stacktrace --no-daemon
