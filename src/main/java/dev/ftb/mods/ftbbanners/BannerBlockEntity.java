@@ -43,6 +43,11 @@ public class BannerBlockEntity extends TileEntity {
             nbt1.putString("image", layer.image.toString());
             nbt1.putBoolean("glow", layer.glow);
             nbt1.putBoolean("culling", layer.culling);
+            nbt1.putString("text", layer.text);
+            nbt1.putString("textAlign", layer.textAlign);
+            nbt1.putString("textBackground", layer.textBackground);
+            nbt1.putFloat("textScale", layer.textScale);
+
 
             if (!layer.gameStage.isEmpty() || ModList.get().isLoaded("gamestages")) {
                 nbt1.putString("game_stage", layer.gameStage);
@@ -90,6 +95,12 @@ public class BannerBlockEntity extends TileEntity {
                 layer.glow = nbt1.getBoolean("glow");
                 layer.culling = nbt1.getBoolean("culling");
                 layer.gameStage = nbt1.getString("game_stage");
+
+                layer.text = nbt1.getString("text");
+                layer.textAlign = nbt1.getString("textAlign");
+                layer.textBackground = nbt1.getString("textBackground");
+                layer.textScale = nbt1.getFloat("textScale");
+
                 layerList.add(layer);
             }
         }

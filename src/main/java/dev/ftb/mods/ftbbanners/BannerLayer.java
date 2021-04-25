@@ -15,6 +15,10 @@ public class BannerLayer {
     public boolean glow = false;
     public boolean culling = false;
     public String gameStage = "";
+    public String text = "";
+    public String textAlign = "left";
+    public String textBackground = "";
+    public float textScale = 1F;
 
     public boolean isVisible(PlayerEntity player) {
         if (player.isCreative()) {
