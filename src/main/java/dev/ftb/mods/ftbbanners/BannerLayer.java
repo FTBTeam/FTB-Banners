@@ -1,6 +1,6 @@
 package dev.ftb.mods.ftbbanners;
 
-import net.darkhax.gamestages.GameStageHelper;
+import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModList;
@@ -20,17 +20,17 @@ public class BannerLayer {
         if (player.isCreative()) {
             return true;
         } else if (!this.gameStage.isEmpty() && ModList.get().isLoaded("gamestages")) {
-            return this.hasGameStage(player);
+            return this.hasGameStage();
         }
 
         return true;
     }
 
-    private boolean hasGameStage(PlayerEntity player) {
+    private boolean hasGameStage() {
         if (this.gameStage.charAt(0) == '!') {
-            return !GameStageHelper.hasStage(player, this.gameStage.substring(1));
+            return !GameStageSaveHandler.getClientData().hasStage(this.gameStage.substring(1));
         }
 
-        return GameStageHelper.hasStage(player, this.gameStage);
+        return GameStageSaveHandler.getClientData().hasStage(this.gameStage);
     }
 }
