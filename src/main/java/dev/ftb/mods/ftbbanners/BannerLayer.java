@@ -18,6 +18,7 @@ public class BannerLayer {
     public String text = "";
     public String textAlign = "left";
     public String textBackground = "";
+    public float textBackgroundAlpha = .5f;
     public float textScale = 1F;
 
     public boolean isVisible(PlayerEntity player) {

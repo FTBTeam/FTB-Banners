@@ -47,7 +47,7 @@ public class BannerBlockEntity extends TileEntity {
             nbt1.putString("textAlign", layer.textAlign);
             nbt1.putString("textBackground", layer.textBackground);
             nbt1.putFloat("textScale", layer.textScale);
-
+            nbt1.putFloat("textBackgroundAlpha", layer.textBackgroundAlpha);
 
             if (!layer.gameStage.isEmpty() || ModList.get().isLoaded("gamestages")) {
                 nbt1.putString("game_stage", layer.gameStage);
@@ -100,6 +100,7 @@ public class BannerBlockEntity extends TileEntity {
                 layer.textAlign = nbt1.getString("textAlign");
                 layer.textBackground = nbt1.getString("textBackground");
                 layer.textScale = nbt1.getFloat("textScale");
+                layer.textBackgroundAlpha = nbt1.getFloat("textBackgroundAlpha");
 
                 layerList.add(layer);
             }

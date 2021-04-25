@@ -13,6 +13,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.TranslationTextComponent;
 
 /**
  * @author LatvianModder
@@ -94,38 +96,67 @@ public class BannerBlockRenderer extends TileEntityRenderer<BannerBlockEntity> {
         matrix.scale(-0.025F, -0.025F, 0.025F);
         matrix.mulPose(Vector3f.YP.rotationDegrees(180 + f + banner.rotationY));
         for (BannerLayer layer : banner.layers) {
-            if (layer.isVisible(mc.player) && !layer.text.isEmpty()) {
-                int light = layer.glow
-                    ? 15728880
-                    : combinedLights;
+            if (!layer.isVisible(mc.player) || layer.text.isEmpty()) {
+                continue;
+            }
 
-                String hello = "This is a really stupid way of doing this I guess,\nI have no idea why you would want to put so much\ntext on a screen but I guess you know better than me?";
-                String[] parts = hello.split("\n");
-                int fontWidth = 0;
-                for (String part : parts) {
-                    int w = mc.font.width(part);
-                    if (w > fontWidth) {
-                        fontWidth = w;
-                    }
-                }
+            float scale = layer.textScale == 0
+                ? 1f
+                : layer.textScale;
 
-                int width2 = (fontWidth + 20) / 2;
-                int height = (mc.font.lineHeight - 2) * parts.length;
+            matrix.pushPose();
+            matrix.scale(scale, scale, scale);
 
-                matrix.pushPose();
-                matrix.translate(0, -(height / f), .1f);
-                IVertexBuilder textBuff = buffer.getBuffer(RenderType.text(BACKGROUND));
-                textBuff.vertex(matrix.last().pose(), (float) -width2, (float) -height, 0).color(1F, 1F, 1F, .5F).uv(0.0F, 1.0F).uv2(light).endVertex();
-                textBuff.vertex(matrix.last().pose(), (float) -width2, (float) height, 0).color(1F, 1F, 1F, .5F).uv(1.0F, 1.0F).uv2(light).endVertex();
-                textBuff.vertex(matrix.last().pose(), (float) width2, (float) height, 0).color(1F, 1F, 1F, .5F).uv(1.0F, 0.0F).uv2(light).endVertex();
-                textBuff.vertex(matrix.last().pose(), (float) width2, (float) -height, 0).color(1F, 1F, 1F, .5F).uv(0.0F, 0.0F).uv2(light).endVertex();
-                matrix.popPose();
+            int light = layer.glow
+                ? 15728880
+                : combinedLights;
 
-                for (int i = 0; i < parts.length; i++) {
-                    int textWidth = mc.font.width(parts[i]);
-                    mc.font.drawShadow(matrix, parts[i], -(textWidth / 2f), 4 + (-height) + (i * (mc.font.lineHeight + 2)), 0xFFFFFF);
+            String layerText = new TranslationTextComponent(layer.text).getString();
+            String[] parts = layerText.split("\n");
+            int fontWidth = 0;
+            for (String part : parts) {
+                int w = mc.font.width(part);
+                if (w > fontWidth) {
+                    fontWidth = w;
                 }
             }
+
+            int width = (fontWidth + 20) / 2;
+            int height = ((mc.font.lineHeight - 2) * parts.length) - 1;
+
+            matrix.pushPose();
+            matrix.translate(0, 0, .1f);
+            IVertexBuilder textBuff = buffer.getBuffer(RenderType.text(BACKGROUND));
+            float r = 0f, g = 0f, b = 0f, alpha = layer.textBackgroundAlpha;
+            if (!layer.textBackground.isEmpty() && layer.textBackground.contains("#")) {
+                Color color = Color.parseColor(layer.textBackground);
+                int bg = color == null
+                    ? 0x0000FF
+                    : color.getValue();
+
+                r = ((bg >> 16) & 0xFF) / 255f;
+                g = ((bg >> 8) & 0xFF) / 255f;
+                b = (bg & 0xFF) / 255f;
+            }
+
+            textBuff.vertex(matrix.last().pose(), (float) -width, (float) -height, 0).color(r, g, b, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
+            textBuff.vertex(matrix.last().pose(), (float) -width, (float) height, 0).color(r, g, b, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
+            textBuff.vertex(matrix.last().pose(), (float) width, (float) height, 0).color(r, g, b, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
+            textBuff.vertex(matrix.last().pose(), (float) width, (float) -height, 0).color(r, g, b, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
+            matrix.popPose();
+
+            for (int i = 0; i < parts.length; i++) {
+                float textWidth = (-width) + 10;
+                if (!layer.textAlign.equals("left")) {
+                    textWidth = layer.textAlign.equals("center")
+                        ? -(mc.font.width(parts[i]) / 2f)
+                        : (width - mc.font.width(parts[i])) - 10;
+                }
+
+                mc.font.drawShadow(matrix, parts[i], textWidth, (-height + 9) + (i * (mc.font.lineHeight + 2)), 0xFFFFFF);
+            }
+
+            matrix.popPose();
         }
         matrix.popPose();
     }
