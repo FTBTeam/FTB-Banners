@@ -1,5 +1,7 @@
 {
-	"multipart": [
-		{"apply": {"model": "minecraft:stone"}}
-	]
+  "variants": {
+    "": {
+      "model": "minecraft:stone"
+    }
+  }
 }
