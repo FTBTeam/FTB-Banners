@@ -39,12 +39,12 @@ public class BannerBlockRenderer extends TileEntityRenderer<BannerBlockEntity> {
         //        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         matrix.translate(0.5D, 0.5D, 0.5D);
         matrix.scale(1F, 1F, -1F);
+        matrix.translate(banner.offsetX, banner.offsetY, banner.offsetZ);
 
         float f = banner.getBlockState().getValue(HorizontalBlock.FACING).toYRot();
         matrix.mulPose(Vector3f.YP.rotationDegrees(-f + banner.rotationY));
-        matrix.mulPose(Vector3f.ZP.rotationDegrees(90 + banner.rotationZ));
+        matrix.mulPose(Vector3f.ZP.rotationDegrees(-90 + banner.rotationZ));
         matrix.mulPose(Vector3f.XP.rotationDegrees(banner.rotationX));
-        matrix.translate(banner.offsetX, banner.offsetY, banner.offsetZ);
 
         double w2 = banner.width / 2D;
         double h2 = banner.height / -2D;
@@ -84,18 +84,18 @@ public class BannerBlockRenderer extends TileEntityRenderer<BannerBlockEntity> {
                 IVertexBuilder vertexBuilder = buffer.getBuffer(text);
                 Matrix4f pose = matrix.last().pose();
 
-                vertexBuilder.vertex(pose, (float) -w2, (float) -h2, 0).color(1F, 1F, 1F, a).uv(0.0F, 1.0F).uv2(light).endVertex();
-                vertexBuilder.vertex(pose, (float) -w2, (float) h2, (float) wind1).color(1F, 1F, 1F, a).uv(1.0F, 1.0F).uv2(light).endVertex();
-                vertexBuilder.vertex(pose, (float) w2, (float) h2, (float) wind2).color(1F, 1F, 1F, a).uv(1.0F, 0.0F).uv2(light).endVertex();
-                vertexBuilder.vertex(pose, (float) w2, (float) -h2, 0).color(1F, 1F, 1F, a).uv(0.0F, 0.0F).uv2(light).endVertex();
+                vertexBuilder.vertex(pose, (float) -h2, (float) -w2, 0).color(1F, 1F, 1F, a).uv(0.0F, 1.0F).uv2(light).endVertex();
+                vertexBuilder.vertex(pose, (float) -h2, (float) w2, (float) wind1).color(1F, 1F, 1F, a).uv(1.0F, 1.0F).uv2(light).endVertex();
+                vertexBuilder.vertex(pose, (float) h2, (float) w2, (float) wind2).color(1F, 1F, 1F, a).uv(1.0F, 0.0F).uv2(light).endVertex();
+                vertexBuilder.vertex(pose, (float) h2, (float) -w2, 0).color(1F, 1F, 1F, a).uv(0.0F, 0.0F).uv2(light).endVertex();
 
                 if (!layer.culling) {
                     // Renders the back
                     matrix.mulPose(Vector3f.XP.rotationDegrees(180));
-                    vertexBuilder.vertex(pose, (float) -w2, (float) -h2, (float) -wind1).color(1F, 1F, 1F, a).uv(0.0F, 1.0F).uv2(light).endVertex();
-                    vertexBuilder.vertex(pose, (float) -w2, (float) h2, 0).color(1F, 1F, 1F, a).uv(1.0F, 1.0F).uv2(light).endVertex();
-                    vertexBuilder.vertex(pose, (float) w2, (float) h2, 0).color(1F, 1F, 1F, a).uv(1.0F, 0.0F).uv2(light).endVertex();
-                    vertexBuilder.vertex(pose, (float) w2, (float) -h2, (float) -wind2).color(1F, 1F, 1F, a).uv(0.0F, 0.0F).uv2(light).endVertex();
+                    vertexBuilder.vertex(pose, (float) -h2, (float) -w2, (float) -wind1).color(1F, 1F, 1F, a).uv(0.0F, 1.0F).uv2(light).endVertex();
+                    vertexBuilder.vertex(pose, (float) -h2, (float) w2, 0).color(1F, 1F, 1F, a).uv(1.0F, 1.0F).uv2(light).endVertex();
+                    vertexBuilder.vertex(pose, (float) h2, (float) w2, 0).color(1F, 1F, 1F, a).uv(1.0F, 0.0F).uv2(light).endVertex();
+                    vertexBuilder.vertex(pose, (float) h2, (float) -w2, (float) -wind2).color(1F, 1F, 1F, a).uv(0.0F, 0.0F).uv2(light).endVertex();
                 }
             }
         }
