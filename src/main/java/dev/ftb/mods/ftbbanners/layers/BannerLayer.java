@@ -1,20 +1,32 @@
-package dev.ftb.mods.ftbbanners;
+package dev.ftb.mods.ftbbanners.layers;
 
 import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.ModList;
 
-/**
- * @author LatvianModder
- */
 public class BannerLayer {
-    public static final ResourceLocation DEFAULT_IMAGE = new ResourceLocation("textures/gui/presets/isles.png");
-
-    public ResourceLocation image = DEFAULT_IMAGE;
     public boolean glow = false;
     public boolean culling = false;
     public String gameStage = "";
+    public boolean visible = true;
+
+    public void write(CompoundNBT nbt) {
+        if (!this.gameStage.isEmpty() || ModList.get().isLoaded("gamestages")) {
+            nbt.putString("game_stage", this.gameStage);
+        }
+        nbt.putBoolean("glow", this.glow);
+        nbt.putBoolean("culling", this.culling);
+        nbt.putString("game_stage", this.gameStage);
+        nbt.putBoolean("visible", this.visible);
+    }
+
+    public void read(CompoundNBT nbt) {
+        this.glow = nbt.getBoolean("glow");
+        this.culling = nbt.getBoolean("culling");
+        this.gameStage = nbt.getString("game_stage");
+        this.visible = nbt.getBoolean("visible");
+    }
 
     public boolean isVisible(PlayerEntity player) {
         if (player.isCreative()) {
@@ -23,7 +35,7 @@ public class BannerLayer {
             return this.hasGameStage();
         }
 
-        return true;
+        return this.visible;
     }
 
     private boolean hasGameStage() {

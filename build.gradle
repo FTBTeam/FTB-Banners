@@ -90,6 +90,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
     compile fg.deobf("curse.maven:game-stages-268655:${gamestages_file}")
+    runtimeOnly fg.deobf("curse.maven:bookshelf-228525:${gamestages_bookshelf_file}")
 }
 
 //processResources {

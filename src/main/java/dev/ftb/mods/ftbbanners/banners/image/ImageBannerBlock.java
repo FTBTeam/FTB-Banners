@@ -1,5 +1,6 @@
-package dev.ftb.mods.ftbbanners;
+package dev.ftb.mods.ftbbanners.banners.image;
 
+import dev.ftb.mods.ftbbanners.FTBBanners;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -23,10 +24,10 @@ import java.util.function.Predicate;
 /**
  * @author LatvianModder
  */
-public class BannerBlock extends HorizontalBlock {
+public class ImageBannerBlock extends HorizontalBlock {
     private static final Predicate<Entity> PREDICATE = entity -> entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
 
-    public BannerBlock() {
+    public ImageBannerBlock() {
         super(Properties.of(Material.BARRIER).strength(6000000F, 6000000F).noCollission().noDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
@@ -47,7 +48,7 @@ public class BannerBlock extends HorizontalBlock {
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return FTBBanners.BANNER_TILE.get().create();
+        return FTBBanners.BANNER_IMAGE_TILE.get().create();
     }
 
     @Override
