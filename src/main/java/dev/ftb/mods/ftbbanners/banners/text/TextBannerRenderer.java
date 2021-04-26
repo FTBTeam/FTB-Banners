@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.Color;
-import net.minecraft.util.text.TranslationTextComponent;
 
 /**
  * @author LatvianModder
@@ -46,7 +45,7 @@ public class TextBannerRenderer extends TileEntityRenderer<TextBannerEntity> {
                 ? 15728880
                 : combinedLights;
 
-            String layerText = new TranslationTextComponent(layer.text).getString();
+            String layerText = "Hello, you are\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello\nhello"; //new TranslationTextComponent(layer.text).getString();
             String[] parts = layerText.split("\n");
             int fontWidth = 0;
             for (String part : parts) {
@@ -57,7 +56,7 @@ public class TextBannerRenderer extends TileEntityRenderer<TextBannerEntity> {
             }
 
             int width = (fontWidth + 20) / 2;
-            int height = ((mc.font.lineHeight - 2) * parts.length) - 1;
+            int height = (mc.font.lineHeight + 2) * parts.length;
 
             matrix.pushPose();
             matrix.translate(0, 0, .1f);
@@ -79,13 +78,16 @@ public class TextBannerRenderer extends TileEntityRenderer<TextBannerEntity> {
                 b = (bg & 0xFF) / 255f;
             }
 
-            vertexBuilder.vertex(matrix.last().pose(), (float) -width, (float) -height, 0.5f).color(r, g, b, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
-            vertexBuilder.vertex(matrix.last().pose(), (float) -width, (float) height, 0.5f).color(r, g, b, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
-            vertexBuilder.vertex(matrix.last().pose(), (float) width, (float) height, 0.5f).color(r, g, b, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
-            vertexBuilder.vertex(matrix.last().pose(), (float) width, (float) -height, 0.5f).color(r, g, b, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
+            float bgHeight = height - (4f * parts.length);
+            vertexBuilder.vertex(matrix.last().pose(), (float) -width, -bgHeight, 0.5f).color(r, g, b, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
+            vertexBuilder.vertex(matrix.last().pose(), (float) -width, bgHeight, 0.5f).color(r, g, b, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
+            vertexBuilder.vertex(matrix.last().pose(), (float) width, bgHeight, 0.5f).color(r, g, b, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
+            vertexBuilder.vertex(matrix.last().pose(), (float) width, -bgHeight, 0.5f).color(r, g, b, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
 
             matrix.popPose();
 
+            matrix.pushPose();
+            matrix.translate(0, (-height) / 2f, 0);
             for (int i = 0; i < parts.length; i++) {
                 float textWidth = (-width) + 10;
                 if (!layer.alignment.equals("left")) {
@@ -95,7 +97,7 @@ public class TextBannerRenderer extends TileEntityRenderer<TextBannerEntity> {
                 }
 
 
-                int textY = (-height + 14) + (i * (mc.font.lineHeight + 2));
+                int textY = i * (mc.font.lineHeight + 2);
                 if (layer.textShadow) {
                     mc.font.drawShadow(matrix, parts[i], textWidth, textY, 0xFFFFFF);
                 } else {
@@ -114,6 +116,7 @@ public class TextBannerRenderer extends TileEntityRenderer<TextBannerEntity> {
                     matrix.popPose();
                 }
             }
+            matrix.popPose();
         }
         matrix.popPose();
     }
