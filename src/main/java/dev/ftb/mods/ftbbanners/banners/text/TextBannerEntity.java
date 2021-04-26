@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class TextBannerEntity extends AbstractBannerEntity<BannerTextLayer> {
     public float scale = 1F;
+    public boolean followPlayer = false;
     BannerTextLayer[] layers = {new BannerTextLayer()};
 
     public TextBannerEntity() {
@@ -19,6 +20,7 @@ public class TextBannerEntity extends AbstractBannerEntity<BannerTextLayer> {
     public CompoundNBT write(CompoundNBT nbt) {
         super.write(nbt);
         nbt.putFloat("scale", this.scale);
+        nbt.putBoolean("follow_player", this.followPlayer);
         return nbt;
     }
 
@@ -26,6 +28,7 @@ public class TextBannerEntity extends AbstractBannerEntity<BannerTextLayer> {
     public void read(CompoundNBT nbt) {
         super.read(nbt);
         this.scale = nbt.getFloat("scale");
+        this.followPlayer = nbt.getBoolean("follow_player");
     }
 
     @Override

@@ -1,5 +1,5 @@
 {
-  "text.ftbbanners.test": "This is test §4text to §cshow how §0the\nLines and such work with the\nBanner when rendering text",
+  "text.ftbbanners.example": "§6This is §ltest§r text to §cshow how §athe\nLines and§ksuch work§r§o §nwith§r the\nBanner when rendering text",
   "block.ftbbanners.banner_image_block": "Image Banner Block",
   "block.ftbbanners.banner_text_block": "Text Banner Block",
   "block.ftbbanners.banner_item_block": "Item Banner Block"

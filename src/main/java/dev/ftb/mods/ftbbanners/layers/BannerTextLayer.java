@@ -3,7 +3,7 @@ package dev.ftb.mods.ftbbanners.layers;
 import net.minecraft.nbt.CompoundNBT;
 
 public class BannerTextLayer extends BannerLayer {
-    public String text = "";
+    public String text = "text.ftbbanners.example";
     public boolean textShadow = false;
     public String alignment = "left";
     public String bgColor = "";
