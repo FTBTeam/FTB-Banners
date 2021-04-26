@@ -1,4 +1,6 @@
 {
-  "block.ftbbanners.banner_block": "Banner Block",
-  "text.ftbbanners.test": "This is test text to show how the\nLines and such work with the\nBanner when rendering text"
+  "text.ftbbanners.test": "This is test §4text to §cshow how §0the\nLines and such work with the\nBanner when rendering text",
+  "block.ftbbanners.banner_image_block": "Image Banner Block",
+  "block.ftbbanners.banner_text_block": "Text Banner Block",
+  "block.ftbbanners.banner_item_block": "Item Banner Block"
 }
