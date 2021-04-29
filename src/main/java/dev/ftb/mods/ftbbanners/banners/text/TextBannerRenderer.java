@@ -42,6 +42,7 @@ public class TextBannerRenderer extends TileEntityRenderer<TextBannerEntity> {
         matrix.pushPose();
         matrix.translate(0.5D, 0.5D, 0.5D);
         matrix.translate(banner.offsetX, banner.offsetY, banner.offsetZ);
+
         if (banner.followPlayer) {
             matrix.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         }
@@ -49,6 +50,8 @@ public class TextBannerRenderer extends TileEntityRenderer<TextBannerEntity> {
         matrix.scale(banner.scale, banner.scale, banner.scale);
         if (!banner.followPlayer) {
             matrix.mulPose(Vector3f.YP.rotationDegrees(180 + blockRotation + banner.rotationY));
+            matrix.mulPose(Vector3f.ZP.rotationDegrees(banner.rotationZ));
+            matrix.mulPose(Vector3f.XP.rotationDegrees(banner.rotationX));
         }
 
         for (BannerTextLayer layer : banner.layers) {
