@@ -40,7 +40,7 @@ public class ImageBannerRenderer extends TileEntityRenderer<ImageBannerEntity> {
         }
 
         float f = banner.getBlockState().getValue(HorizontalBlock.FACING).toYRot();
-        matrix.mulPose(Vector3f.YP.rotationDegrees(-f + banner.rotationY));
+        matrix.mulPose(Vector3f.YP.rotationDegrees(f + banner.rotationY));
         matrix.mulPose(Vector3f.ZP.rotationDegrees(-90 + banner.rotationZ));
         matrix.mulPose(Vector3f.XP.rotationDegrees(banner.rotationX));
 
