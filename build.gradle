@@ -67,12 +67,6 @@ minecraft {
             }
         }
     }
-//	version = "${mc_version}-${forge_version}"
-//	runDir = "run"
-//	mappings = project.mappings_version
-//
-//	replace "0.0.0.ftbbanners", project.version
-//	replaceIn "${mod_reference}"
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
@@ -91,6 +85,11 @@ dependencies {
     minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
     compile fg.deobf("curse.maven:game-stages-268655:${gamestages_file}")
     runtimeOnly fg.deobf("curse.maven:bookshelf-228525:${gamestages_bookshelf_file}")
+    runtimeOnly fg.deobf("curse.maven:rftools-base-326041:3206945")
+    runtimeOnly fg.deobf("curse.maven:mcjtylib-233105:3236516")
+    runtimeOnly fg.deobf("curse.maven:rftools-builder-347706:3302323")
+    runtimeOnly fg.deobf("curse.maven:rftools-storage-350006:3302324")
+    runtimeOnly fg.deobf("curse.maven:rftools-utility-342466:3310447")
 }
 
 //processResources {
