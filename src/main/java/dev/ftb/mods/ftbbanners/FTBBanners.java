@@ -9,12 +9,17 @@ import dev.ftb.mods.ftbbanners.banners.item.ItemBannerRenderer;
 import dev.ftb.mods.ftbbanners.banners.text.TextBannerBlock;
 import dev.ftb.mods.ftbbanners.banners.text.TextBannerEntity;
 import dev.ftb.mods.ftbbanners.banners.text.TextBannerRenderer;
+import dev.ftb.mods.ftbbanners.commands.CopyRFToolsScreenCommand;
 import net.minecraft.block.Block;
+import net.minecraft.command.Commands;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
@@ -51,11 +56,17 @@ public class FTBBanners {
         TILES.register(modEventBus);
 
         modEventBus.addListener(this::clientSetup);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
         ClientRegistry.bindTileEntityRenderer(BANNER_IMAGE_TILE.get(), ImageBannerRenderer::new);
         ClientRegistry.bindTileEntityRenderer(BANNER_TEXT_TILE.get(), TextBannerRenderer::new);
         ClientRegistry.bindTileEntityRenderer(BANNER_ITEM_TILE.get(), ItemBannerRenderer::new);
+    }
+
+    @SubscribeEvent
+    public void commandRegister(RegisterCommandsEvent event) {
+        event.getDispatcher().register(Commands.literal(FTBBanners.MOD_ID).then(CopyRFToolsScreenCommand.register()));
     }
 }
