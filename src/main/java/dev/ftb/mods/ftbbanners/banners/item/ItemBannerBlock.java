@@ -41,11 +41,13 @@ public class ItemBannerBlock extends ImageBannerBlock {
 
                 if (itemInHand.isEmpty() && playerEntity.isCrouching() && layer.items.size() > 0) {
                     layer.items.remove(layer.items.size() - 1);
+                    blockEntity.setChanged();
                     continue;
                 }
 
                 if (!itemInHand.isEmpty()) {
                     layer.items.add(itemInHand);
+                    blockEntity.setChanged();
                 }
             }
 
