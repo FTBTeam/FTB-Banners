@@ -4,7 +4,7 @@ license = "All rights reserved"
 issueTrackerURL = "https://github.com/FTBTeam/FTB-Banners/issues" #optional
 [[mods]] #mandatory
 modId = "ftbbanners" #mandatory
-version = "${file.jarVersion}" #mandatory
+version = "${version}" #mandatory
 displayName = "FTB Banners" #mandatory
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
