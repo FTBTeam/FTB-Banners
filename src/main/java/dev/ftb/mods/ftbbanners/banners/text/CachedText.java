@@ -26,9 +26,15 @@ public class CachedText {
 
 		List<FormattedCharSequence> linesList = new ArrayList<>();
 
-		for (String s : slines) {
-			// linesList.addAll(font.split(ClientTextComponentUtils.parse(s), 200));
-			linesList.add(ClientTextComponentUtils.parse(s).getVisualOrderText());
+		if (slines != null) {
+			for (String s : slines) {
+				if (s == null || s.isEmpty()) {
+					linesList.add(FormattedCharSequence.EMPTY);
+				} else {
+					// linesList.addAll(font.split(ClientTextComponentUtils.parse(s), 200));
+					linesList.add(ClientTextComponentUtils.parse(s).getVisualOrderText());
+				}
+			}
 		}
 
 		lines = linesList.toArray(new FormattedCharSequence[0]);
