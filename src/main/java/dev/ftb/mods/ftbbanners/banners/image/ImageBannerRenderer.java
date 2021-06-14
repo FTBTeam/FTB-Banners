@@ -2,6 +2,7 @@ package dev.ftb.mods.ftbbanners.banners.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.ftb.mods.ftbbanners.banners.CustomRenders;
 import dev.ftb.mods.ftbbanners.layers.BannerImageLayer;
@@ -65,6 +66,8 @@ public class ImageBannerRenderer extends BlockEntityRenderer<ImageBannerEntity> 
 			}
 		}
 
+		Matrix4f m = matrix.last().pose();
+
 		for (BannerImageLayer layer : banner.getLayers()) {
 			if (layer.isVisible(mc.player)) {
 				int light = layer.glow
@@ -77,10 +80,10 @@ public class ImageBannerRenderer extends BlockEntityRenderer<ImageBannerEntity> 
 						: CustomRenders.transparencyRender(image);
 
 				VertexConsumer vertexBuilder = buffer.getBuffer(text);
-				vertexBuilder.vertex(matrix.last().pose(), (float) -h2, (float) -w2, (float) wind1).color(1F, 1F, 1F, a).uv(0.0F, 1.0F).uv2(light).endVertex();
-				vertexBuilder.vertex(matrix.last().pose(), (float) -h2, (float) w2, (float) wind2).color(1F, 1F, 1F, a).uv(1.0F, 1.0F).uv2(light).endVertex();
-				vertexBuilder.vertex(matrix.last().pose(), (float) h2, (float) w2, 0).color(1F, 1F, 1F, a).uv(1.0F, 0.0F).uv2(light).endVertex();
-				vertexBuilder.vertex(matrix.last().pose(), (float) h2, (float) -w2, 0).color(1F, 1F, 1F, a).uv(0.0F, 0.0F).uv2(light).endVertex();
+				vertexBuilder.vertex(m, (float) -h2, (float) -w2, (float) wind1).color(1F, 1F, 1F, a).uv(0.0F, 1.0F).uv2(light).endVertex();
+				vertexBuilder.vertex(m, (float) -h2, (float) w2, (float) wind2).color(1F, 1F, 1F, a).uv(1.0F, 1.0F).uv2(light).endVertex();
+				vertexBuilder.vertex(m, (float) h2, (float) w2, 0).color(1F, 1F, 1F, a).uv(1.0F, 0.0F).uv2(light).endVertex();
+				vertexBuilder.vertex(m, (float) h2, (float) -w2, 0).color(1F, 1F, 1F, a).uv(0.0F, 0.0F).uv2(light).endVertex();
 			}
 		}
 

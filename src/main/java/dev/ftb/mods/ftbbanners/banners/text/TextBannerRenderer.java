@@ -2,6 +2,7 @@ package dev.ftb.mods.ftbbanners.banners.text;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.CustomRenders;
@@ -11,9 +12,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
 /**
@@ -26,7 +26,7 @@ public class TextBannerRenderer extends BlockEntityRenderer<TextBannerEntity> {
 		super(dispatcher);
 	}
 
-	public static void drawString(PoseStack stack, String string, float x, float y, boolean shadow) {
+	public static void drawString(PoseStack stack, FormattedCharSequence string, float x, float y, boolean shadow) {
 		if (shadow) {
 			Minecraft.getInstance().font.drawShadow(stack, string, x, y, 0xFFFFFF);
 		} else {
@@ -55,71 +55,41 @@ public class TextBannerRenderer extends BlockEntityRenderer<TextBannerEntity> {
 		}
 
 		for (BannerTextLayer layer : banner.layers) {
-			if (!layer.isVisible(mc.player) || layer.text.isEmpty()) {
+			if (!layer.isVisible(mc.player)) {
 				continue;
 			}
-			int light = layer.glow
-					? 15728880
-					: combinedLights;
+			int light = layer.glow ? 15728880 : combinedLights;
 
-			String layerText = new TranslatableComponent(layer.text).getString();
+			CachedText text = layer.getText();
 
-			// Run over the
-			String[] parts = layerText.split("\n");
-			int fontWidth = 0;
-			for (String part : parts) {
-				int w = mc.font.width(part);
-				if (w > fontWidth) {
-					fontWidth = w;
-				}
-			}
-
-			int width = (fontWidth + 20) / 2;
-			float height = ((mc.font.lineHeight - 3.5f) * parts.length) + 3f;
+			float height = ((mc.font.lineHeight - 3.5f) * text.lines.length) + 3f;
 
 			matrix.pushPose();
 			matrix.translate(0, 0, .1f);
 
-			RenderType text = layer.culling
+			RenderType renderType = layer.culling
 					? RenderType.text(BACKGROUND)
 					: CustomRenders.transparencyRender(BACKGROUND);
 
-			VertexConsumer vertexBuilder = buffer.getBuffer(text);
-			float r = 0f, g = 0f, b = 0f, alpha = layer.bgAlpha;
-			if (!layer.bgColor.isEmpty() && layer.bgColor.contains("#")) {
-				TextColor color = TextColor.parseColor(layer.bgColor);
-				int bg = color == null
-						? 0x0000FF
-						: color.getValue();
+			VertexConsumer vertexBuilder = buffer.getBuffer(renderType);
 
-				r = ((bg >> 16) & 0xFF) / 255f;
-				g = ((bg >> 8) & 0xFF) / 255f;
-				b = (bg & 0xFF) / 255f;
-			}
-
-			vertexBuilder.vertex(matrix.last().pose(), (float) -width, -height, 0.5f).color(r, g, b, alpha).uv(0.0F, 1.0F).uv2(light).endVertex();
-			vertexBuilder.vertex(matrix.last().pose(), (float) -width, height, 0.5f).color(r, g, b, alpha).uv(1.0F, 1.0F).uv2(light).endVertex();
-			vertexBuilder.vertex(matrix.last().pose(), (float) width, height, 0.5f).color(r, g, b, alpha).uv(1.0F, 0.0F).uv2(light).endVertex();
-			vertexBuilder.vertex(matrix.last().pose(), (float) width, -height, 0.5f).color(r, g, b, alpha).uv(0.0F, 0.0F).uv2(light).endVertex();
+			Matrix4f m = matrix.last().pose();
+			vertexBuilder.vertex(m, (float) -text.width, -height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(0.0F, 1.0F).uv2(light).endVertex();
+			vertexBuilder.vertex(m, (float) -text.width, height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(1.0F, 1.0F).uv2(light).endVertex();
+			vertexBuilder.vertex(m, (float) text.width, height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(1.0F, 0.0F).uv2(light).endVertex();
+			vertexBuilder.vertex(m, (float) text.width, -height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(0.0F, 0.0F).uv2(light).endVertex();
 
 			matrix.popPose();
 
-			for (int i = 0; i < parts.length; i++) {
-				float textWidth = (-width) + 10;
-				if (!layer.alignment.equals("left")) {
-					textWidth = layer.alignment.equals("center")
-							? -(mc.font.width(parts[i]) / 2f)
-							: (width - mc.font.width(parts[i])) - 10;
-				}
-
+			for (int i = 0; i < text.lines.length; i++) {
 				float textY = -height + (i * (mc.font.lineHeight + 2)) + 4.5f;
-				drawString(matrix, parts[i], textWidth, textY, layer.textShadow);
+				drawString(matrix, text.lines[i], text.textX[i], textY, layer.textShadow);
 
 				if (!layer.culling) {
 					matrix.pushPose();
 					matrix.mulPose(Vector3f.YP.rotationDegrees(180));
 					matrix.translate(0, 0, -2);
-					drawString(matrix, parts[i], textWidth, textY, layer.textShadow);
+					drawString(matrix, text.lines[i], text.textX[i], textY, layer.textShadow);
 					matrix.popPose();
 				}
 			}

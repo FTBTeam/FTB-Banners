@@ -30,23 +30,26 @@ public class TextBannerBlock extends ImageBannerBlock {
 	}
 
 	@Override
+	@Deprecated
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult trace) {
+		BlockEntity banner = world.getBlockEntity(pos);
+		if (!(banner instanceof TextBannerEntity)) {
+			return InteractionResult.PASS;
+		}
+
 		ItemStack held = entity.getItemInHand(hand);
 
 		if (!(held.getItem() instanceof WritableBookItem) && !(held.getItem() instanceof WrittenBookItem)) {
-			return super.use(state, world, pos, entity, hand, trace);
-		}
-
-		BlockEntity banner = world.getBlockEntity(pos);
-		if (!(banner instanceof TextBannerEntity)) {
-			return super.use(state, world, pos, entity, hand, trace);
+			FTBBanners.PROXY.openGui((TextBannerEntity) banner);
+			return InteractionResult.SUCCESS;
 		}
 
 		CompoundTag bookData = held.getOrCreateTag();
 		if (bookData.contains("pages")) {
 			ListTag pages = bookData.getList("pages", Constants.NBT.TAG_STRING);
 			if (pages.size() > 0) {
-				((TextBannerEntity) banner).layers[0].text = pages.stream().map(Tag::getAsString).collect(Collectors.joining("\n"));
+				((TextBannerEntity) banner).layers[0].text = pages.stream().map(Tag::getAsString).collect(Collectors.joining("\n")).split("\n");
+				((TextBannerEntity) banner).layers[0].cached = null;
 				banner.setChanged();
 			}
 		}
