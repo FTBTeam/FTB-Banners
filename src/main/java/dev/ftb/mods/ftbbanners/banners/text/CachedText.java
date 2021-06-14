@@ -14,8 +14,10 @@ public class CachedText {
 	public final FormattedCharSequence[] lines;
 	public int fontWidth;
 	public int width;
+	public float height;
 	public int[] widths;
 	public float[] textX;
+	public float[] textY;
 
 	public float bgR, bgG, bgB;
 
@@ -25,12 +27,14 @@ public class CachedText {
 		List<FormattedCharSequence> linesList = new ArrayList<>();
 
 		for (String s : slines) {
-			linesList.addAll(font.split(ClientTextComponentUtils.parse(s), 200));
+			// linesList.addAll(font.split(ClientTextComponentUtils.parse(s), 200));
+			linesList.add(ClientTextComponentUtils.parse(s).getVisualOrderText());
 		}
 
 		lines = linesList.toArray(new FormattedCharSequence[0]);
 		widths = new int[lines.length];
 		textX = new float[lines.length];
+		textY = new float[lines.length];
 
 		for (int i = 0; i < lines.length; i++) {
 			widths[i] = font.width(lines[i]);
@@ -38,6 +42,7 @@ public class CachedText {
 		}
 
 		width = (fontWidth + 20) / 2;
+		height = ((font.lineHeight - 3.5f) * lines.length) + 3f;
 
 		for (int i = 0; i < lines.length; i++) {
 			widths[i] = font.width(lines[i]);
@@ -52,6 +57,8 @@ public class CachedText {
 				default:
 					textX[i] = -width + 10;
 			}
+
+			textY[i] = -height + (i * (font.lineHeight + 2)) + 4.5f;
 		}
 
 		if (!layer.bgColor.isEmpty() && layer.bgColor.contains("#")) {

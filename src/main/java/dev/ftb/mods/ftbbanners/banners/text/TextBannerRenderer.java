@@ -60,9 +60,7 @@ public class TextBannerRenderer extends BlockEntityRenderer<TextBannerEntity> {
 			}
 			int light = layer.glow ? 15728880 : combinedLights;
 
-			CachedText text = layer.getText();
-
-			float height = ((mc.font.lineHeight - 3.5f) * text.lines.length) + 3f;
+			CachedText t = layer.getText();
 
 			matrix.pushPose();
 			matrix.translate(0, 0, .1f);
@@ -74,22 +72,21 @@ public class TextBannerRenderer extends BlockEntityRenderer<TextBannerEntity> {
 			VertexConsumer vertexBuilder = buffer.getBuffer(renderType);
 
 			Matrix4f m = matrix.last().pose();
-			vertexBuilder.vertex(m, (float) -text.width, -height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(0.0F, 1.0F).uv2(light).endVertex();
-			vertexBuilder.vertex(m, (float) -text.width, height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(1.0F, 1.0F).uv2(light).endVertex();
-			vertexBuilder.vertex(m, (float) text.width, height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(1.0F, 0.0F).uv2(light).endVertex();
-			vertexBuilder.vertex(m, (float) text.width, -height, 0.5f).color(text.bgR, text.bgG, text.bgB, layer.bgAlpha).uv(0.0F, 0.0F).uv2(light).endVertex();
+			vertexBuilder.vertex(m, (float) -t.width, -t.height, 0.5f).color(t.bgR, t.bgG, t.bgB, layer.bgAlpha).uv(0.0F, 1.0F).uv2(light).endVertex();
+			vertexBuilder.vertex(m, (float) -t.width, t.height, 0.5f).color(t.bgR, t.bgG, t.bgB, layer.bgAlpha).uv(1.0F, 1.0F).uv2(light).endVertex();
+			vertexBuilder.vertex(m, (float) t.width, t.height, 0.5f).color(t.bgR, t.bgG, t.bgB, layer.bgAlpha).uv(1.0F, 0.0F).uv2(light).endVertex();
+			vertexBuilder.vertex(m, (float) t.width, -t.height, 0.5f).color(t.bgR, t.bgG, t.bgB, layer.bgAlpha).uv(0.0F, 0.0F).uv2(light).endVertex();
 
 			matrix.popPose();
 
-			for (int i = 0; i < text.lines.length; i++) {
-				float textY = -height + (i * (mc.font.lineHeight + 2)) + 4.5f;
-				drawString(matrix, text.lines[i], text.textX[i], textY, layer.textShadow);
+			for (int i = 0; i < t.lines.length; i++) {
+				drawString(matrix, t.lines[i], t.textX[i], t.textY[i], layer.textShadow);
 
 				if (!layer.culling) {
 					matrix.pushPose();
 					matrix.mulPose(Vector3f.YP.rotationDegrees(180));
 					matrix.translate(0, 0, -2);
-					drawString(matrix, text.lines[i], text.textX[i], textY, layer.textShadow);
+					drawString(matrix, t.lines[i], t.textX[i], t.textY[i], layer.textShadow);
 					matrix.popPose();
 				}
 			}

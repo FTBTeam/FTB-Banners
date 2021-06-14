@@ -20,9 +20,17 @@ mandatory = true #mandatory
 versionRange = "[36,)" #mandatory
 ordering = "NONE"
 side = "BOTH"
+
 [[dependencies.ftbbanners]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.16.5,1.17)"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ftbbanners]]
+modId = "ftblibrary"
+mandatory = true
+versionRange = "[1605,)"
+ordering = "AFTER"
 side = "BOTH"

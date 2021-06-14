@@ -7,7 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BannerTextLayer extends BannerLayer {
-	public String[] text = new String[]{"&6This is &ltest&r text to &cshow how &athe", "Lines and&ksuch work&r&o &nwith&r the\nBanner when rendering text"};
+	public String[] text = new String[]{"&6This is &ltest&r text to &cshow how &athe", "Lines and&ksuch work&r&o &nwith&r the", "Banner when rendering text"};
 	public boolean textShadow = false;
 	public String alignment = "left";
 	public String bgColor = "";
