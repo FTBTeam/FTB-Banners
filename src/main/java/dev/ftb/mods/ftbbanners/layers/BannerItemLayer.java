@@ -1,5 +1,6 @@
 package dev.ftb.mods.ftbbanners.layers;
 
+import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
@@ -12,9 +13,7 @@ import java.util.stream.Collectors;
 
 public class BannerItemLayer extends BannerLayer {
 	public boolean spinning = false;
-	public List<ItemStack> items = new ArrayList<ItemStack>() {{
-		this.add(new ItemStack(Items.CLAY_BALL));
-	}};
+	public List<ItemStack> items = Util.make(new ArrayList<>(), list -> list.add(new ItemStack(Items.CLAY_BALL)));
 
 	@Override
 	public void write(CompoundTag nbt) {

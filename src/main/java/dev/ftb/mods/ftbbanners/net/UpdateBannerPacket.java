@@ -1,4 +1,4 @@
-package dev.ftb.mods.ftbbanners;
+package dev.ftb.mods.ftbbanners.net;
 
 import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
 import dev.ftb.mods.ftblibrary.net.snm.BaseC2SPacket;
@@ -25,7 +25,7 @@ public class UpdateBannerPacket extends BaseC2SPacket {
 
 	@Override
 	public PacketID getId() {
-		return FTBBanners.UPDATE_BANNER;
+		return FTBBannersNet.UPDATE_BANNER;
 	}
 
 	@Override

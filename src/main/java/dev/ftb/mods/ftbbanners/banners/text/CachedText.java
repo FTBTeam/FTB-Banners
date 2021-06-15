@@ -1,6 +1,7 @@
 package dev.ftb.mods.ftbbanners.banners.text;
 
 import dev.ftb.mods.ftbbanners.layers.BannerTextLayer;
+import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftblibrary.util.ClientTextComponentUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -20,8 +21,9 @@ public class CachedText {
 	public float[] textY;
 
 	public float bgR, bgG, bgB;
+	public Color4I bgColor;
 
-	public CachedText(BannerTextLayer layer, String[] slines) {
+	public CachedText(BannerTextLayer layer, List<String> slines) {
 		Font font = Minecraft.getInstance().font;
 
 		List<FormattedCharSequence> linesList = new ArrayList<>();
@@ -69,13 +71,13 @@ public class CachedText {
 
 		if (!layer.bgColor.isEmpty() && layer.bgColor.contains("#")) {
 			TextColor color = TextColor.parseColor(layer.bgColor);
-			int bg = color == null
-					? 0x0000FF
-					: color.getValue();
-
-			bgR = ((bg >> 16) & 0xFF) / 255f;
-			bgG = ((bg >> 8) & 0xFF) / 255f;
-			bgB = (bg & 0xFF) / 255f;
+			bgColor = Color4I.rgb(color == null ? 0x0000FF : color.getValue()).withAlphaf(layer.bgAlpha);
+		} else {
+			bgColor = Color4I.BLACK;
 		}
+
+		bgR = bgColor.redf();
+		bgG = bgColor.bluef();
+		bgB = bgColor.greenf();
 	}
 }

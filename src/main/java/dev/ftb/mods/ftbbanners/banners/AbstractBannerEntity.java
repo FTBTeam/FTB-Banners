@@ -12,6 +12,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockEntity {
 	public float rotationX = 0F;
@@ -21,14 +22,16 @@ public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockE
 	public float offsetY = 0F;
 	public float offsetZ = 0F;
 	public float scale = 1F;
+	public List<T> layers = new ArrayList<>(1);
 
 	public AbstractBannerEntity(BlockEntityType<?> type) {
 		super(type);
+		layers.add(createLayer());
 	}
 
 	public CompoundTag write(CompoundTag nbt) {
 		ListTag layerListTag = new ListTag();
-		for (T layer : this.getLayers()) {
+		for (T layer : layers) {
 			CompoundTag nbt1 = new CompoundTag();
 			layer.write(nbt1);
 			layerListTag.add(nbt1);
@@ -48,17 +51,15 @@ public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockE
 	}
 
 	public void read(CompoundTag nbt) {
-		ArrayList<T> layerList = new ArrayList<>();
 		ListTag layerListTag = nbt.getList("layers", Constants.NBT.TAG_COMPOUND);
+		layers = new ArrayList<>(layerListTag.size());
 
 		for (int i = 0; i < layerListTag.size(); i++) {
 			CompoundTag nbt1 = layerListTag.getCompound(i);
 			T layer = this.createLayer();
 			layer.read(nbt1);
-			layerList.add(layer);
+			layers.add(layer);
 		}
-
-		this.setLayers(layerList);
 
 		this.rotationX = nbt.getFloat("rotation_x");
 		this.rotationY = nbt.getFloat("rotation_y");
@@ -117,9 +118,14 @@ public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockE
 		return INFINITE_EXTENT_AABB;
 	}
 
-	public abstract T[] getLayers();
-
-	public abstract void setLayers(ArrayList<T> layers);
-
 	public abstract T createLayer();
+
+	@Override
+	public void clearCache() {
+		super.clearCache();
+
+		for (T layer : layers) {
+			layer.clearCache();
+		}
+	}
 }

@@ -5,11 +5,8 @@ import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
 import dev.ftb.mods.ftbbanners.layers.BannerItemLayer;
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.ArrayList;
-
 public class ItemBannerEntity extends AbstractBannerEntity<BannerItemLayer> {
 	public boolean followPlayer = false;
-	private BannerItemLayer[] layers = {new BannerItemLayer()};
 
 	public ItemBannerEntity() {
 		super(FTBBanners.BANNER_ITEM_TILE.get());
@@ -26,16 +23,6 @@ public class ItemBannerEntity extends AbstractBannerEntity<BannerItemLayer> {
 	public void read(CompoundTag nbt) {
 		super.read(nbt);
 		this.followPlayer = nbt.getBoolean("follow_player");
-	}
-
-	@Override
-	public BannerItemLayer[] getLayers() {
-		return this.layers;
-	}
-
-	@Override
-	public void setLayers(ArrayList<BannerItemLayer> layers) {
-		this.layers = layers.toArray(new BannerItemLayer[0]);
 	}
 
 	@Override

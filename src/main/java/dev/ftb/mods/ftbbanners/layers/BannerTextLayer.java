@@ -6,13 +6,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class BannerTextLayer extends BannerLayer {
-	public String[] text = new String[]{"&6This is &ltest&r text to &cshow how &athe", "Lines and&ksuch work&r&o &nwith&r the", "Banner when rendering text"};
+	public List<String> text = new ArrayList<>(Arrays.asList("&6This is &ltest&r text to &cshow how &athe", "Lines and&ksuch work&r&o &nwith&r the", "Banner when rendering text"));
 	public boolean textShadow = false;
 	public String alignment = "left";
 	public String bgColor = "";
 	public float bgAlpha = 1F;
-	public Object cached = null;
+	private Object cached = null;
 
 	@Override
 	public void write(CompoundTag nbt) {
@@ -27,7 +31,7 @@ public class BannerTextLayer extends BannerLayer {
 	@Override
 	public void read(CompoundTag nbt) {
 		super.read(nbt);
-		this.text = nbt.getString("text").split("\n");
+		this.text = new ArrayList<>(Arrays.asList(nbt.getString("text").split("\n")));
 		cached = null;
 		this.textShadow = nbt.getBoolean("text_shadow");
 		this.alignment = nbt.getString("align");
@@ -37,7 +41,7 @@ public class BannerTextLayer extends BannerLayer {
 
 	@Override
 	public boolean isVisible(Player player) {
-		return text.length > 0 && super.isVisible(player);
+		return !text.isEmpty() && super.isVisible(player);
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -47,5 +51,10 @@ public class BannerTextLayer extends BannerLayer {
 		}
 
 		return (CachedText) cached;
+	}
+
+	@Override
+	public void clearCache() {
+		cached = null;
 	}
 }

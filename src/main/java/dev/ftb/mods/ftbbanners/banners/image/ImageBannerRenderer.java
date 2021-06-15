@@ -68,7 +68,7 @@ public class ImageBannerRenderer extends BlockEntityRenderer<ImageBannerEntity> 
 
 		Matrix4f m = matrix.last().pose();
 
-		for (BannerImageLayer layer : banner.getLayers()) {
+		for (BannerImageLayer layer : banner.layers) {
 			if (layer.isVisible(mc.player)) {
 				int light = layer.glow
 						? 15728880

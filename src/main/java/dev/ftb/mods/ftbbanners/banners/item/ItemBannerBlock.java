@@ -33,8 +33,7 @@ public class ItemBannerBlock extends ImageBannerBlock {
 
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		if (blockEntity instanceof ItemBannerEntity) {
-			BannerItemLayer[] layers = ((ItemBannerEntity) blockEntity).getLayers();
-			for (BannerItemLayer layer : layers) {
+			for (BannerItemLayer layer : ((ItemBannerEntity) blockEntity).layers) {
 				if (!layer.isVisible(playerEntity)) {
 					continue;
 				}

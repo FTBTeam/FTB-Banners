@@ -5,13 +5,10 @@ import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
 import dev.ftb.mods.ftbbanners.layers.BannerImageLayer;
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.ArrayList;
-
 /**
  * @author LatvianModder
  */
 public class ImageBannerEntity extends AbstractBannerEntity<BannerImageLayer> {
-	public BannerImageLayer[] layers = {new BannerImageLayer()};
 	public float width = 1F;
 	public float height = 1F;
 	public int alpha = 255;
@@ -47,17 +44,6 @@ public class ImageBannerEntity extends AbstractBannerEntity<BannerImageLayer> {
 		}
 
 		this.hover = nbt.getBoolean("hover");
-	}
-
-
-	@Override
-	public BannerImageLayer[] getLayers() {
-		return this.layers;
-	}
-
-	@Override
-	public void setLayers(ArrayList<BannerImageLayer> layers) {
-		this.layers = layers.toArray(new BannerImageLayer[0]);
 	}
 
 	@Override

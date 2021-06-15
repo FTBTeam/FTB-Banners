@@ -10,8 +10,7 @@ import dev.ftb.mods.ftbbanners.banners.text.TextBannerBlock;
 import dev.ftb.mods.ftbbanners.banners.text.TextBannerEntity;
 import dev.ftb.mods.ftbbanners.banners.text.TextBannerRenderer;
 import dev.ftb.mods.ftbbanners.commands.CopyRFToolsScreenCommand;
-import dev.ftb.mods.ftblibrary.net.snm.PacketID;
-import dev.ftb.mods.ftblibrary.net.snm.SimpleNetworkManager;
+import dev.ftb.mods.ftbbanners.net.FTBBannersNet;
 import me.shedaniel.architectury.utils.EnvExecutor;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.item.BlockItem;
@@ -51,9 +50,6 @@ public class FTBBanners {
 	public static final RegistryObject<BlockEntityType<TextBannerEntity>> BANNER_TEXT_TILE = TILES.register("banner_text_tile", () -> BlockEntityType.Builder.of(TextBannerEntity::new, BANNER_TEXT_BLOCK.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ItemBannerEntity>> BANNER_ITEM_TILE = TILES.register("banner_item_tile", () -> BlockEntityType.Builder.of(ItemBannerEntity::new, BANNER_ITEM_BLOCK.get()).build(null));
 
-	public static final SimpleNetworkManager NET = SimpleNetworkManager.create(MOD_ID);
-
-	public static final PacketID UPDATE_BANNER = NET.registerC2S("update_banner", UpdateBannerPacket::new);
 	public static FTBBannersCommon PROXY;
 
 	public FTBBanners() {
@@ -67,6 +63,7 @@ public class FTBBanners {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		PROXY = EnvExecutor.getEnvSpecific(() -> FTBBannersClient::new, () -> FTBBannersCommon::new);
+		FTBBannersNet.init();
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {

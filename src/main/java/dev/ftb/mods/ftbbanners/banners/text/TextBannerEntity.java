@@ -5,12 +5,9 @@ import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
 import dev.ftb.mods.ftbbanners.layers.BannerTextLayer;
 import net.minecraft.nbt.CompoundTag;
 
-import java.util.ArrayList;
-
 public class TextBannerEntity extends AbstractBannerEntity<BannerTextLayer> {
 	public float scale = 1F;
 	public boolean followPlayer = false;
-	BannerTextLayer[] layers = {new BannerTextLayer()};
 
 	public TextBannerEntity() {
 		super(FTBBanners.BANNER_TEXT_TILE.get());
@@ -29,16 +26,6 @@ public class TextBannerEntity extends AbstractBannerEntity<BannerTextLayer> {
 		super.read(nbt);
 		this.scale = nbt.getFloat("scale");
 		this.followPlayer = nbt.getBoolean("follow_player");
-	}
-
-	@Override
-	public BannerTextLayer[] getLayers() {
-		return this.layers;
-	}
-
-	@Override
-	public void setLayers(ArrayList<BannerTextLayer> layers) {
-		this.layers = layers.toArray(new BannerTextLayer[0]);
 	}
 
 	@Override

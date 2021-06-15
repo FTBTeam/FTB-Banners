@@ -38,7 +38,7 @@ public class ItemBannerRenderer extends BlockEntityRenderer<ItemBannerEntity> {
 		matrix.mulPose(Vector3f.XP.rotationDegrees(banner.rotationX));
 
 		double boop = Util.getMillis() / 800D;
-		for (BannerItemLayer layer : banner.getLayers()) {
+		for (BannerItemLayer layer : banner.layers) {
 			if (!layer.isVisible(mc.player)) {
 				continue;
 			}

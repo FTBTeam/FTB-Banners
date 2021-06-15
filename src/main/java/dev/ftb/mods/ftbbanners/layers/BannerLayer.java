@@ -45,4 +45,7 @@ public class BannerLayer {
 
 		return GameStageSaveHandler.getClientData().hasStage(this.gameStage);
 	}
+
+	public void clearCache() {
+	}
 }
