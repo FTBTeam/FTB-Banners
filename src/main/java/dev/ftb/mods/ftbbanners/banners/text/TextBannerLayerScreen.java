@@ -13,11 +13,13 @@ import dev.ftb.mods.ftblibrary.ui.TextBox;
 import dev.ftb.mods.ftblibrary.ui.Theme;
 import dev.ftb.mods.ftblibrary.ui.Widget;
 import dev.ftb.mods.ftblibrary.ui.WidgetLayout;
+import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.ClientUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Mth;
+import org.lwjgl.glfw.GLFW;
 
 public class TextBannerLayerScreen extends BaseScreen {
 	public final TextBannerEntity entity;
@@ -84,8 +86,9 @@ public class TextBannerLayerScreen extends BaseScreen {
 						@Override
 						public void onEnterPressed() {
 							super.onEnterPressed();
-							layer.text.add("");
+							layer.text.add(j + 1, "");
 							textPanel.refreshWidgets();
+							setOnlyOneFocused(j + 1);
 						}
 
 						@Override
@@ -93,6 +96,7 @@ public class TextBannerLayerScreen extends BaseScreen {
 							if (getText().isEmpty()) {
 								layer.text.remove(j);
 								textPanel.refreshWidgets();
+								setOnlyOneFocused(j - 1);
 							} else {
 								super.deleteFromCursor(num);
 							}
@@ -100,11 +104,32 @@ public class TextBannerLayerScreen extends BaseScreen {
 
 						@Override
 						public boolean mousePressed(MouseButton button) {
+							setOnlyOneFocused(-1);
+
 							if (button.isRight()) {
 								return false;
 							}
 
 							return super.mousePressed(button);
+						}
+
+						@Override
+						public boolean keyPressed(Key key) {
+							if (isFocused()) {
+								if (key.is(GLFW.GLFW_KEY_UP)) {
+									if (j > 0) {
+										setOnlyOneFocused(j - 1);
+										return true;
+									}
+								} else if (key.is(GLFW.GLFW_KEY_DOWN)) {
+									if (j < layer.text.size() - 1) {
+										setOnlyOneFocused(j + 1);
+										return true;
+									}
+								}
+							}
+
+							return super.keyPressed(key);
 						}
 					};
 
@@ -115,7 +140,6 @@ public class TextBannerLayerScreen extends BaseScreen {
 					if (j == layer.text.size() - 1) {
 						box.setFocused(true);
 						box.setCursorPosition(box.getText().length());
-						//box.setCursorPosition(box.getText().length());
 					}
 				}
 			}
@@ -136,6 +160,18 @@ public class TextBannerLayerScreen extends BaseScreen {
 				Color4I.GRAY.draw(matrixStack, x, y, w, h);
 			}
 		});
+	}
+
+	private void setOnlyOneFocused(int index) {
+		for (Widget w : textPanel.widgets) {
+			((TextBox) w).setFocused(false);
+		}
+
+		if (index >= 0 && index < textPanel.widgets.size()) {
+			TextBox box = ((TextBox) textPanel.widgets.get(index));
+			box.setFocused(true);
+			box.setCursorPosition(box.getText().length());
+		}
 	}
 
 	@Override
