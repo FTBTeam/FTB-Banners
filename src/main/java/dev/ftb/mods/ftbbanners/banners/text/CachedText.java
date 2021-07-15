@@ -33,8 +33,7 @@ public class CachedText {
 				if (s == null || s.isEmpty()) {
 					linesList.add(FormattedCharSequence.EMPTY);
 				} else {
-					// linesList.addAll(font.split(ClientTextComponentUtils.parse(s), 200));
-					linesList.add(ClientTextComponentUtils.parse(s).getVisualOrderText());
+					linesList.addAll(font.split(ClientTextComponentUtils.parse(s), layer.wrap));
 				}
 			}
 		}

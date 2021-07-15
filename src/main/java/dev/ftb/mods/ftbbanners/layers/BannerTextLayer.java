@@ -17,6 +17,7 @@ public class BannerTextLayer extends BannerLayer {
 	public String bgColor = "";
 	public float bgAlpha = 1F;
 	private Object cached = null;
+	public int wrap = 1000;
 
 	@Override
 	public void write(CompoundTag nbt) {
@@ -26,17 +27,19 @@ public class BannerTextLayer extends BannerLayer {
 		nbt.putString("align", this.alignment);
 		nbt.putString("bg_color", this.bgColor);
 		nbt.putFloat("bg_alpha", this.bgAlpha);
+		nbt.putInt("wrap", this.wrap);
 	}
 
 	@Override
 	public void read(CompoundTag nbt) {
 		super.read(nbt);
 		this.text = new ArrayList<>(Arrays.asList(nbt.getString("text").split("\n")));
-		cached = null;
 		this.textShadow = nbt.getBoolean("text_shadow");
 		this.alignment = nbt.getString("align");
 		this.bgColor = nbt.getString("bg_color");
 		this.bgAlpha = nbt.getFloat("bg_alpha");
+		this.wrap = nbt.contains("wrap") ? nbt.getInt("wrap") : 1000;
+		cached = null;
 	}
 
 	@Override
