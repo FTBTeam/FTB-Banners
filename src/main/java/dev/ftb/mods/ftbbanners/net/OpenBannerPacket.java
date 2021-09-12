@@ -2,15 +2,15 @@ package dev.ftb.mods.ftbbanners.net;
 
 import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
-import dev.ftb.mods.ftblibrary.net.snm.BaseS2CPacket;
-import dev.ftb.mods.ftblibrary.net.snm.PacketID;
 import me.shedaniel.architectury.networking.NetworkManager;
+import me.shedaniel.architectury.networking.simple.BaseS2CMessage;
+import me.shedaniel.architectury.networking.simple.MessageType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class OpenBannerPacket extends BaseS2CPacket {
+public class OpenBannerPacket extends BaseS2CMessage {
 	private final BlockPos pos;
 	private final CompoundTag nbt;
 	private final boolean sneak;
@@ -28,7 +28,7 @@ public class OpenBannerPacket extends BaseS2CPacket {
 	}
 
 	@Override
-	public PacketID getId() {
+	public MessageType getType() {
 		return FTBBannersNet.OPEN_BANNER;
 	}
 

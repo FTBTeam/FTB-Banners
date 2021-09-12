@@ -1,15 +1,15 @@
 package dev.ftb.mods.ftbbanners.net;
 
 import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
-import dev.ftb.mods.ftblibrary.net.snm.BaseC2SPacket;
-import dev.ftb.mods.ftblibrary.net.snm.PacketID;
 import me.shedaniel.architectury.networking.NetworkManager;
+import me.shedaniel.architectury.networking.simple.BaseC2SMessage;
+import me.shedaniel.architectury.networking.simple.MessageType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class UpdateBannerPacket extends BaseC2SPacket {
+public class UpdateBannerPacket extends BaseC2SMessage {
 	private final BlockPos pos;
 	private final CompoundTag nbt;
 
@@ -24,7 +24,7 @@ public class UpdateBannerPacket extends BaseC2SPacket {
 	}
 
 	@Override
-	public PacketID getId() {
+	public MessageType getType() {
 		return FTBBannersNet.UPDATE_BANNER;
 	}
 
