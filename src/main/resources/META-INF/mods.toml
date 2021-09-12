@@ -4,7 +4,7 @@ license = "All rights reserved"
 issueTrackerURL = "https://github.com/FTBTeam/FTB-Banners/issues" #optional
 [[mods]] #mandatory
 modId = "ftbbanners" #mandatory
-version = "${file.jarVersion}" #mandatory
+version = "${version}" #mandatory
 displayName = "FTB Banners" #mandatory
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/" #optional
@@ -20,9 +20,17 @@ mandatory = true #mandatory
 versionRange = "[36,)" #mandatory
 ordering = "NONE"
 side = "BOTH"
+
 [[dependencies.ftbbanners]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.16.5,1.17)"
 ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.ftbbanners]]
+modId = "ftblibrary"
+mandatory = true
+versionRange = "[1605.3.3-build.70,)"
+ordering = "AFTER"
 side = "BOTH"

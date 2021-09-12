@@ -2,55 +2,69 @@ package dev.ftb.mods.ftbbanners.banners.text;
 
 import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.image.ImageBannerBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.WritableBookItem;
-import net.minecraft.item.WrittenBookItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import dev.ftb.mods.ftbbanners.net.OpenBannerPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.WritableBookItem;
+import net.minecraft.world.item.WrittenBookItem;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class TextBannerBlock extends ImageBannerBlock {
-    @Nullable
-    @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
-        return FTBBanners.BANNER_TEXT_TILE.get().create();
-    }
+	@Nullable
+	@Override
+	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
+		return FTBBanners.BANNER_TEXT_TILE.get().create();
+	}
 
-    @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity entity, Hand hand, BlockRayTraceResult trace) {
-        ItemStack held = entity.getItemInHand(hand);
+	@Override
+	@Deprecated
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult trace) {
+		if (!entity.isCreative()) {
+			return InteractionResult.PASS;
+		}
 
-        if (!(held.getItem() instanceof WritableBookItem) && !(held.getItem() instanceof WrittenBookItem)) {
-            return super.use(state, world, pos, entity, hand, trace);
-        }
+		BlockEntity banner = world.getBlockEntity(pos);
+		if (!(banner instanceof TextBannerEntity)) {
+			return InteractionResult.PASS;
+		}
 
-        TileEntity banner = world.getBlockEntity(pos);
-        if (!(banner instanceof TextBannerEntity)) {
-            return super.use(state, world, pos, entity, hand, trace);
-        }
+		ItemStack held = entity.getItemInHand(hand);
 
-        CompoundNBT bookData = held.getOrCreateTag();
-        if (bookData.contains("pages")) {
-            ListNBT pages = bookData.getList("pages", Constants.NBT.TAG_STRING);
-            if (pages.size() > 0) {
-                ((TextBannerEntity) banner).layers[0].text = pages.stream().map(INBT::getAsString).collect(Collectors.joining("\n"));
-                banner.setChanged();
-            }
-        }
+		if (!(held.getItem() instanceof WritableBookItem) && !(held.getItem() instanceof WrittenBookItem)) {
+			if (!world.isClientSide()) {
+				new OpenBannerPacket((TextBannerEntity) banner, entity.isCrouching()).sendTo((ServerPlayer) entity);
+			}
 
-        return ActionResultType.CONSUME;
-    }
+			return InteractionResult.SUCCESS;
+		}
+
+		CompoundTag bookData = held.getOrCreateTag();
+		if (bookData.contains("pages")) {
+			ListTag pages = bookData.getList("pages", Constants.NBT.TAG_STRING);
+			if (pages.size() > 0) {
+				((TextBannerEntity) banner).layers.get(0).text = new ArrayList<>(Arrays.asList(pages.stream().map(Tag::getAsString).collect(Collectors.joining("\n")).split("\n")));
+				banner.clearCache();
+				banner.setChanged();
+			}
+		}
+
+		return InteractionResult.CONSUME;
+	}
 }

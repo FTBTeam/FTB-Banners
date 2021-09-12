@@ -3,46 +3,33 @@ package dev.ftb.mods.ftbbanners.banners.text;
 import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
 import dev.ftb.mods.ftbbanners.layers.BannerTextLayer;
-import net.minecraft.nbt.CompoundNBT;
-
-import java.util.ArrayList;
+import net.minecraft.nbt.CompoundTag;
 
 public class TextBannerEntity extends AbstractBannerEntity<BannerTextLayer> {
-    public float scale = 1F;
-    public boolean followPlayer = false;
-    BannerTextLayer[] layers = {new BannerTextLayer()};
+	public float scale = 1F;
+	public boolean followPlayer = false;
 
-    public TextBannerEntity() {
-        super(FTBBanners.BANNER_TEXT_TILE.get());
-    }
+	public TextBannerEntity() {
+		super(FTBBanners.BANNER_TEXT_TILE.get());
+	}
 
-    @Override
-    public CompoundNBT write(CompoundNBT nbt) {
-        super.write(nbt);
-        nbt.putFloat("scale", this.scale);
-        nbt.putBoolean("follow_player", this.followPlayer);
-        return nbt;
-    }
+	@Override
+	public CompoundTag write(CompoundTag nbt) {
+		super.write(nbt);
+		nbt.putFloat("scale", this.scale);
+		nbt.putBoolean("follow_player", this.followPlayer);
+		return nbt;
+	}
 
-    @Override
-    public void read(CompoundNBT nbt) {
-        super.read(nbt);
-        this.scale = nbt.getFloat("scale");
-        this.followPlayer = nbt.getBoolean("follow_player");
-    }
+	@Override
+	public void read(CompoundTag nbt) {
+		super.read(nbt);
+		this.scale = nbt.getFloat("scale");
+		this.followPlayer = nbt.getBoolean("follow_player");
+	}
 
-    @Override
-    public BannerTextLayer[] getLayers() {
-        return this.layers;
-    }
-
-    @Override
-    public void setLayers(ArrayList<BannerTextLayer> layers) {
-        this.layers = layers.toArray(new BannerTextLayer[0]);
-    }
-
-    @Override
-    public BannerTextLayer createLayer() {
-        return new BannerTextLayer();
-    }
+	@Override
+	public BannerTextLayer createLayer() {
+		return new BannerTextLayer();
+	}
 }
