@@ -1,15 +1,16 @@
 package dev.ftb.mods.ftbbanners.banners;
 
 import dev.ftb.mods.ftbbanners.layers.BannerLayer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,9 @@ public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockE
 	public float scale = 1F;
 	public List<T> layers = new ArrayList<>(1);
 
-	public AbstractBannerEntity(BlockEntityType<?> type) {
-		super(type);
+	public AbstractBannerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+
 		layers.add(createLayer());
 	}
 
@@ -51,7 +53,7 @@ public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockE
 	}
 
 	public void read(CompoundTag nbt) {
-		ListTag layerListTag = nbt.getList("layers", Constants.NBT.TAG_COMPOUND);
+		ListTag layerListTag = nbt.getList("layers", Tag.TAG_COMPOUND);
 		layers = new ArrayList<>(layerListTag.size());
 
 		for (int i = 0; i < layerListTag.size(); i++) {
@@ -76,41 +78,39 @@ public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockE
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound) {
-		super.save(compound);
-		this.write(compound);
-		return compound;
+	protected void saveAdditional(CompoundTag tag) {
+		super.saveAdditional(tag);
+		this.write(tag);
 	}
 
 	@Override
-	public void load(BlockState state, CompoundTag compound) {
-		super.load(state, compound);
+	public void load(CompoundTag compound) {
+		super.load(compound);
 		this.read(compound);
 	}
 
 	@Override
 	public CompoundTag getUpdateTag() {
-		return this.save(new CompoundTag());
+		CompoundTag tag = new CompoundTag();
+		saveAdditional(tag);
+		return tag;
 	}
 
 	@Override
-	public void handleUpdateTag(BlockState state, CompoundTag tag) {
-		this.read(tag);
-	}
-
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket() {
-		return new ClientboundBlockEntityDataPacket(this.getBlockPos(), 0, this.write(new CompoundTag()));
+	public void handleUpdateTag(CompoundTag tag) {
+		read(tag);
 	}
 
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-		this.read(pkt.getTag());
+		if (pkt.getTag() != null) {
+			this.read(pkt.getTag());
+		}
 	}
 
 	@Override
-	public double getViewDistance() {
-		return 128D * 128D;
+	public ClientboundBlockEntityDataPacket getUpdatePacket() {
+		return ClientboundBlockEntityDataPacket.create(this);
 	}
 
 	@Override
@@ -120,12 +120,7 @@ public abstract class AbstractBannerEntity<T extends BannerLayer> extends BlockE
 
 	public abstract T createLayer();
 
-	@Override
 	public void clearCache() {
-		super.clearCache();
-
-		for (T layer : layers) {
-			layer.clearCache();
-		}
+		layers.forEach(BannerLayer::clearCache);
 	}
 }

@@ -1,7 +1,8 @@
 modLoader = "javafml" #mandatory
-loaderVersion = "[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion = "[43,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 license = "All rights reserved"
 issueTrackerURL = "https://github.com/FTBTeam/FTB-Banners/issues" #optional
+
 [[mods]] #mandatory
 modId = "ftbbanners" #mandatory
 version = "${version}" #mandatory
@@ -17,20 +18,20 @@ Banners with custom images :D
 [[dependencies.ftbbanners]] #optional
 modId = "forge" #mandatory
 mandatory = true #mandatory
-versionRange = "[36,)" #mandatory
+versionRange = "[43.2.8,)" #mandatory
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.ftbbanners]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.16.5,1.17)"
+versionRange = "[1.19.2,1.19.3)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.ftbbanners]]
 modId = "ftblibrary"
 mandatory = true
-versionRange = "[1605.3.3-build.70,)"
+versionRange = "[${libraryversion},)"
 ordering = "AFTER"
 side = "BOTH"

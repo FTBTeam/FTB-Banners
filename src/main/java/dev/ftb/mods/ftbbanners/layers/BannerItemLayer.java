@@ -3,9 +3,9 @@ package dev.ftb.mods.ftbbanners.layers;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class BannerItemLayer extends BannerLayer {
 	public void read(CompoundTag nbt) {
 		super.read(nbt);
 
-		ListTag items = nbt.getList("items", Constants.NBT.TAG_COMPOUND);
+		ListTag items = nbt.getList("items", Tag.TAG_COMPOUND);
 		this.items = items.stream().map(e -> ItemStack.of((CompoundTag) e)).collect(Collectors.toList());
 
 		this.spinning = nbt.getBoolean("spinning");

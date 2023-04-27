@@ -1,9 +1,9 @@
 package dev.ftb.mods.ftbbanners.net;
 
+import dev.architectury.networking.NetworkManager;
+import dev.architectury.networking.simple.BaseC2SMessage;
+import dev.architectury.networking.simple.MessageType;
 import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
-import me.shedaniel.architectury.networking.NetworkManager;
-import me.shedaniel.architectury.networking.simple.BaseC2SMessage;
-import me.shedaniel.architectury.networking.simple.MessageType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -39,10 +39,10 @@ public class UpdateBannerPacket extends BaseC2SMessage {
 		if (context.getPlayer().isCreative()) {
 			BlockEntity blockEntity = context.getPlayer().level.getBlockEntity(pos);
 
-			if (blockEntity instanceof AbstractBannerEntity) {
-				((AbstractBannerEntity<?>) blockEntity).read(nbt);
-				blockEntity.clearCache();
-				blockEntity.setChanged();
+			if (blockEntity instanceof AbstractBannerEntity<?> bannerEntity) {
+				bannerEntity.read(nbt);
+				bannerEntity.clearCache();
+				bannerEntity.setChanged();
 			}
 		}
 	}

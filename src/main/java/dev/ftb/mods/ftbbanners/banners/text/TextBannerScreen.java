@@ -7,8 +7,7 @@ import dev.ftb.mods.ftblibrary.ui.Panel;
 import dev.ftb.mods.ftblibrary.ui.SimpleTextButton;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.ui.misc.ButtonListBaseScreen;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 
 public class TextBannerScreen extends ButtonListBaseScreen {
 	public final TextBannerEntity entity;
@@ -21,7 +20,7 @@ public class TextBannerScreen extends ButtonListBaseScreen {
 	public void addButtons(Panel panel) {
 		for (int i = 0; i < entity.layers.size(); i++) {
 			final int j = i;
-			panel.add(new SimpleTextButton(panel, new TextComponent("Layer " + (j + 1)), Icons.ART) {
+			panel.add(new SimpleTextButton(panel, Component.literal("Layer " + (j + 1)), Icons.ART) {
 				@Override
 				public void onClicked(MouseButton mouseButton) {
 					playClickSound();
@@ -30,7 +29,7 @@ public class TextBannerScreen extends ButtonListBaseScreen {
 			});
 		}
 
-		panel.add(new SimpleTextButton(panel, new TranslatableComponent("gui.add"), Icons.ADD) {
+		panel.add(new SimpleTextButton(panel, Component.translatable("gui.add"), Icons.ADD) {
 			@Override
 			public void onClicked(MouseButton mouseButton) {
 				playClickSound();

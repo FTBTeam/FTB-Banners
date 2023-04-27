@@ -6,12 +6,14 @@ import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.CustomRenders;
+import dev.ftb.mods.ftbbanners.client.ClientUtil;
 import dev.ftb.mods.ftbbanners.layers.BannerTextLayer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -19,18 +21,20 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 /**
  * @author LatvianModder
  */
-public class TextBannerRenderer extends BlockEntityRenderer<TextBannerEntity> {
+public class TextBannerRenderer implements BlockEntityRenderer<TextBannerEntity> {
 	private static final ResourceLocation BACKGROUND = new ResourceLocation(FTBBanners.MOD_ID, "textures/bg.png");
 
-	public TextBannerRenderer(BlockEntityRenderDispatcher dispatcher) {
-		super(dispatcher);
+	private final Font font;
+
+	public TextBannerRenderer(BlockEntityRendererProvider.Context ctx) {
+		this.font = ctx.getFont();
 	}
 
-	public static void drawString(PoseStack stack, FormattedCharSequence string, float x, float y, boolean shadow) {
+	private void drawString(PoseStack stack, FormattedCharSequence string, float x, float y, boolean shadow) {
 		if (shadow) {
-			Minecraft.getInstance().font.drawShadow(stack, string, x, y, 0xFFFFFF);
+			font.drawShadow(stack, string, x, y, 0xFFFFFF);
 		} else {
-			Minecraft.getInstance().font.draw(stack, string, x, y, 0xFFFFFF);
+			font.draw(stack, string, x, y, 0xFFFFFF);
 		}
 	}
 
@@ -58,16 +62,14 @@ public class TextBannerRenderer extends BlockEntityRenderer<TextBannerEntity> {
 			if (!layer.isVisible(mc.player)) {
 				continue;
 			}
-			int light = layer.glow ? 15728880 : combinedLights;
+			int light = layer.glow ? ClientUtil.FULL_BRIGHT : combinedLights;
 
 			CachedText t = layer.getText();
 
 			matrix.pushPose();
 			matrix.translate(0, 0, .1f);
 
-			RenderType renderType = layer.culling
-					? RenderType.text(BACKGROUND)
-					: CustomRenders.transparencyRender(BACKGROUND);
+			RenderType renderType = layer.culling ? RenderType.text(BACKGROUND) : CustomRenders.transparencyRender(BACKGROUND);
 
 			VertexConsumer vertexBuilder = buffer.getBuffer(renderType);
 

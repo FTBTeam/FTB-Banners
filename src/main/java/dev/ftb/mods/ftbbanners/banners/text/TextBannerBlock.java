@@ -1,6 +1,5 @@
 package dev.ftb.mods.ftbbanners.banners.text;
 
-import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.image.ImageBannerBlock;
 import dev.ftb.mods.ftbbanners.net.OpenBannerPacket;
 import net.minecraft.core.BlockPos;
@@ -14,23 +13,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.WritableBookItem;
 import net.minecraft.world.item.WrittenBookItem;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.common.util.Constants;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class TextBannerBlock extends ImageBannerBlock {
-	@Nullable
+public class TextBannerBlock extends ImageBannerBlock implements EntityBlock {
 	@Override
-	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-		return FTBBanners.BANNER_TEXT_TILE.get().create();
+	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+		return new TextBannerEntity(pos, state);
 	}
 
 	@Override
@@ -41,7 +37,7 @@ public class TextBannerBlock extends ImageBannerBlock {
 		}
 
 		BlockEntity banner = world.getBlockEntity(pos);
-		if (!(banner instanceof TextBannerEntity)) {
+		if (!(banner instanceof TextBannerEntity textBanner)) {
 			return InteractionResult.PASS;
 		}
 
@@ -49,7 +45,7 @@ public class TextBannerBlock extends ImageBannerBlock {
 
 		if (!(held.getItem() instanceof WritableBookItem) && !(held.getItem() instanceof WrittenBookItem)) {
 			if (!world.isClientSide()) {
-				new OpenBannerPacket((TextBannerEntity) banner, entity.isCrouching()).sendTo((ServerPlayer) entity);
+				new OpenBannerPacket(textBanner, entity.isCrouching()).sendTo((ServerPlayer) entity);
 			}
 
 			return InteractionResult.SUCCESS;
@@ -57,10 +53,15 @@ public class TextBannerBlock extends ImageBannerBlock {
 
 		CompoundTag bookData = held.getOrCreateTag();
 		if (bookData.contains("pages")) {
-			ListTag pages = bookData.getList("pages", Constants.NBT.TAG_STRING);
+			ListTag pages = bookData.getList("pages", Tag.TAG_STRING);
 			if (pages.size() > 0) {
-				((TextBannerEntity) banner).layers.get(0).text = new ArrayList<>(Arrays.asList(pages.stream().map(Tag::getAsString).collect(Collectors.joining("\n")).split("\n")));
-				banner.clearCache();
+				textBanner.layers.get(0).text = new ArrayList<>(Arrays.asList(
+						pages.stream()
+								.map(Tag::getAsString)
+								.collect(Collectors.joining("\n"))
+								.split("\n")
+				));
+				textBanner.clearCache();
 				banner.setChanged();
 			}
 		}

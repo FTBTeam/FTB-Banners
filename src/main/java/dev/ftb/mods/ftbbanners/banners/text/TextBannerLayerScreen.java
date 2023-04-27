@@ -5,19 +5,12 @@ import dev.ftb.mods.ftbbanners.layers.BannerTextLayer;
 import dev.ftb.mods.ftbbanners.net.UpdateBannerPacket;
 import dev.ftb.mods.ftblibrary.icon.Color4I;
 import dev.ftb.mods.ftblibrary.icon.Icons;
-import dev.ftb.mods.ftblibrary.ui.BaseScreen;
-import dev.ftb.mods.ftblibrary.ui.Button;
-import dev.ftb.mods.ftblibrary.ui.Panel;
-import dev.ftb.mods.ftblibrary.ui.SimpleTextButton;
-import dev.ftb.mods.ftblibrary.ui.TextBox;
-import dev.ftb.mods.ftblibrary.ui.Theme;
-import dev.ftb.mods.ftblibrary.ui.Widget;
-import dev.ftb.mods.ftblibrary.ui.WidgetLayout;
+import dev.ftb.mods.ftblibrary.ui.*;
 import dev.ftb.mods.ftblibrary.ui.input.Key;
 import dev.ftb.mods.ftblibrary.ui.input.MouseButton;
 import dev.ftb.mods.ftblibrary.util.ClientUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
 
@@ -38,7 +31,7 @@ public class TextBannerLayerScreen extends BaseScreen {
 
 	@Override
 	public void addWidgets() {
-		add(previewButton = new SimpleTextButton(this, new TextComponent("Preview"), Icons.ART) {
+		add(previewButton = new SimpleTextButton(this, Component.literal("Preview"), Icons.ART) {
 			@Override
 			public void onClicked(MouseButton mouseButton) {
 				playClickSound();
@@ -47,7 +40,7 @@ public class TextBannerLayerScreen extends BaseScreen {
 			}
 		});
 
-		add(nbtButton = new SimpleTextButton(this, new TextComponent("Edit NBT"), Icons.NOTES) {
+		add(nbtButton = new SimpleTextButton(this, Component.literal("Edit NBT"), Icons.NOTES) {
 			@Override
 			public void onClicked(MouseButton mouseButton) {
 				playClickSound();
@@ -57,7 +50,7 @@ public class TextBannerLayerScreen extends BaseScreen {
 			}
 		});
 
-		add(deleteButton = new SimpleTextButton(this, new TextComponent("Delete Layer"), Icons.REMOVE) {
+		add(deleteButton = new SimpleTextButton(this, Component.literal("Delete Layer"), Icons.REMOVE) {
 			@Override
 			public void onClicked(MouseButton mouseButton) {
 				playClickSound();

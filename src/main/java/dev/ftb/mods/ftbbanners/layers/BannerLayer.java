@@ -1,11 +1,12 @@
 package dev.ftb.mods.ftbbanners.layers;
 
+import dev.ftb.mods.ftbbanners.integration.Gamestages;
 import net.darkhax.gamestages.data.GameStageSaveHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.fml.ModList;
 
-public class BannerLayer {
+public abstract class BannerLayer {
 	public boolean glow = false;
 	public boolean culling = false;
 	public String gameStage = "";
@@ -32,18 +33,10 @@ public class BannerLayer {
 		if (player.isCreative()) {
 			return true;
 		} else if (!this.gameStage.isEmpty() && ModList.get().isLoaded("gamestages")) {
-			return this.hasGameStage();
+			return Gamestages.hasGameStage(gameStage);
+		} else {
+			return this.visible;
 		}
-
-		return this.visible;
-	}
-
-	private boolean hasGameStage() {
-		if (this.gameStage.charAt(0) == '!') {
-			return !GameStageSaveHandler.getClientData().hasStage(this.gameStage.substring(1));
-		}
-
-		return GameStageSaveHandler.getClientData().hasStage(this.gameStage);
 	}
 
 	public void clearCache() {

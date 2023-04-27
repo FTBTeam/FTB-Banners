@@ -5,21 +5,21 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import dev.ftb.mods.ftbbanners.banners.CustomRenders;
+import dev.ftb.mods.ftbbanners.client.ClientUtil;
 import dev.ftb.mods.ftbbanners.layers.BannerImageLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
 /**
  * @author LatvianModder
  */
-public class ImageBannerRenderer extends BlockEntityRenderer<ImageBannerEntity> {
-	public ImageBannerRenderer(BlockEntityRenderDispatcher dispatcher) {
-		super(dispatcher);
+public class ImageBannerRenderer implements BlockEntityRenderer<ImageBannerEntity> {
+	public ImageBannerRenderer(BlockEntityRendererProvider.Context ctx) {
 	}
 
 	@Override
@@ -54,9 +54,8 @@ public class ImageBannerRenderer extends BlockEntityRenderer<ImageBannerEntity> 
 		// Compute wind
 		if (banner.wind > 0D) {
 			double ws = banner.windSpeed * 0.001D;
-			double d = System.currentTimeMillis() * ws + (banner.hover
-					? 0D
-					: banner.getBlockPos().hashCode() * 0.19D);
+			double d = System.currentTimeMillis() * ws
+					+ (banner.hover ? 0D : banner.getBlockPos().hashCode() * 0.19D);
 
 			if (banner.hover) {
 				matrix.translate(0D, Math.sin(d * 1.5D) * (banner.wind * banner.height * 0.9D), 0D);
@@ -70,14 +69,10 @@ public class ImageBannerRenderer extends BlockEntityRenderer<ImageBannerEntity> 
 
 		for (BannerImageLayer layer : banner.layers) {
 			if (layer.isVisible(mc.player)) {
-				int light = layer.glow
-						? 15728880
-						: combinedLights;
+				int light = layer.glow ? ClientUtil.FULL_BRIGHT : combinedLights;
 
 				ResourceLocation image = layer.image;
-				RenderType text = layer.culling
-						? RenderType.text(image)
-						: CustomRenders.transparencyRender(image);
+				RenderType text = RenderType.text(image); //layer.culling ? RenderType.text(image) : CustomRenders.transparencyRender(image);
 
 				VertexConsumer vertexBuilder = buffer.getBuffer(text);
 				vertexBuilder.vertex(m, (float) -h2, (float) -w2, (float) wind1).color(1F, 1F, 1F, a).uv(0.0F, 1.0F).uv2(light).endVertex();

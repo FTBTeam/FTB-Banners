@@ -55,20 +55,15 @@ public class CachedText {
 			widths[i] = font.width(lines[i]);
 
 			switch (layer.alignment) {
-				case "center":
-					textX[i] = -(widths[i] / 2F);
-					break;
-				case "right":
-					textX[i] = (width - widths[i]) - 10;
-					break;
-				default:
-					textX[i] = -width + 10;
+				case "center" -> textX[i] = -(widths[i] / 2F);
+				case "right" -> textX[i] = (width - widths[i]) - 10;
+				default -> textX[i] = -width + 10;
 			}
 
 			textY[i] = -height + (i * (font.lineHeight + 2)) + 4.5f;
 		}
 
-		if (!layer.bgColor.isEmpty() && layer.bgColor.contains("#")) {
+		if (layer.bgColor.contains("#")) {
 			TextColor color = TextColor.parseColor(layer.bgColor);
 			bgColor = Color4I.rgb(color == null ? 0x0000FF : color.getValue()).withAlphaf(layer.bgAlpha);
 		} else {

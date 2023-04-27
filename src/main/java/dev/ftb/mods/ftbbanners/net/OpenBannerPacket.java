@@ -1,10 +1,11 @@
 package dev.ftb.mods.ftbbanners.net;
 
+import dev.architectury.networking.NetworkManager;
+import dev.architectury.networking.simple.BaseS2CMessage;
+import dev.architectury.networking.simple.MessageType;
 import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
-import me.shedaniel.architectury.networking.NetworkManager;
-import me.shedaniel.architectury.networking.simple.BaseS2CMessage;
-import me.shedaniel.architectury.networking.simple.MessageType;
+import dev.ftb.mods.ftbbanners.client.ClientUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -43,10 +44,10 @@ public class OpenBannerPacket extends BaseS2CMessage {
 	public void handle(NetworkManager.PacketContext context) {
 		BlockEntity blockEntity = context.getPlayer().level.getBlockEntity(pos);
 
-		if (blockEntity instanceof AbstractBannerEntity) {
-			((AbstractBannerEntity<?>) blockEntity).read(nbt);
-			blockEntity.clearCache();
-			FTBBanners.PROXY.openGui((AbstractBannerEntity<?>) blockEntity, sneak);
+		if (blockEntity instanceof AbstractBannerEntity<?> banner) {
+			banner.read(nbt);
+			banner.clearCache();
+			ClientUtil.openGui(banner, sneak);
 		}
 	}
 }

@@ -2,22 +2,22 @@ package dev.ftb.mods.ftbbanners.banners.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
+import dev.ftb.mods.ftbbanners.client.ClientUtil;
 import dev.ftb.mods.ftbbanners.layers.BannerItemLayer;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
 /**
  * @author LatvianModder
  */
-public class ItemBannerRenderer extends BlockEntityRenderer<ItemBannerEntity> {
+public class ItemBannerRenderer implements BlockEntityRenderer<ItemBannerEntity> {
 
-	public ItemBannerRenderer(BlockEntityRenderDispatcher dispatcher) {
-		super(dispatcher);
+	public ItemBannerRenderer(BlockEntityRendererProvider.Context ctx) {
 	}
 
 	@Override
@@ -45,9 +45,7 @@ public class ItemBannerRenderer extends BlockEntityRenderer<ItemBannerEntity> {
 
 			matrix.pushPose();
 			matrix.translate(-layer.items.size(), 0, 0);
-			int light = layer.glow
-					? 15728880
-					: combinedLights;
+			int light = layer.glow ? ClientUtil.FULL_BRIGHT : combinedLights;
 
 			for (int i = 0; i < layer.items.size(); i++) {
 				matrix.pushPose();
@@ -57,7 +55,7 @@ public class ItemBannerRenderer extends BlockEntityRenderer<ItemBannerEntity> {
 				}
 				try {
 					Minecraft.getInstance().getItemRenderer().renderStatic(
-							layer.items.get(i), ItemTransforms.TransformType.FIXED, light, combinedOverlay, matrix, buffer
+							layer.items.get(i), ItemTransforms.TransformType.FIXED, light, combinedOverlay, matrix, buffer, 0
 					);
 				} catch (Exception ignored) {
 				}

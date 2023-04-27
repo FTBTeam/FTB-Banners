@@ -1,8 +1,8 @@
 name: Build & Release
 
 on:
-  push:
-    branches: [ 'main', 'dev', '*-dev' ]
+  release:
+    types: [ published ]
 
 jobs:
   build:
@@ -10,8 +10,7 @@ jobs:
       !contains(github.event.head_commit.message, '[ciskip]')
     uses: FTBTeam/mods-meta/.github/workflows/standard-release.yml@main
     with:
-      curse-publish-task: ""
-      maven-private: true
-      maven-snapshots: true
+      curse-publish-task: curseforge
     secrets:
       ftb-maven-token: ${{ secrets.FTB_MAVEN_TOKEN }}
+      curse-token: ${{ secrets.CURSEFORGE_KEY }}

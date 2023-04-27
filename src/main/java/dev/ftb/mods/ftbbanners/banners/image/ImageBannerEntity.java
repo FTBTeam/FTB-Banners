@@ -1,9 +1,11 @@
 package dev.ftb.mods.ftbbanners.banners.image;
 
-import dev.ftb.mods.ftbbanners.FTBBanners;
 import dev.ftb.mods.ftbbanners.banners.AbstractBannerEntity;
 import dev.ftb.mods.ftbbanners.layers.BannerImageLayer;
+import dev.ftb.mods.ftbbanners.register.ModBlockEntities;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author LatvianModder
@@ -16,8 +18,8 @@ public class ImageBannerEntity extends AbstractBannerEntity<BannerImageLayer> {
 	public float windSpeed = 1F;
 	public boolean hover = false;
 
-	public ImageBannerEntity() {
-		super(FTBBanners.BANNER_IMAGE_TILE.get());
+	public ImageBannerEntity(BlockPos pos, BlockState state) {
+		super(ModBlockEntities.BANNER_IMAGE_TILE.get(), pos, state);
 	}
 
 	@Override

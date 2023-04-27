@@ -8,7 +8,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.stream.Collectors;
 
@@ -32,31 +32,31 @@ public class CopyRFToolsScreenCommand {
 		ServerPlayer player = ctx.getSource().getPlayerOrException();
 		HitResult pick = player.pick(20, 0, false);
 
-		if (!(pick instanceof BlockHitResult)) {
-			ctx.getSource().sendSuccess(new TextComponent("No RF Screen block found"), false);
+		if (!(pick instanceof BlockHitResult blockTrace)) {
+			ctx.getSource().sendSuccess(Component.literal("No RF Screen block found"), false);
 			return 0;
 		}
 
-		BlockHitResult blockTrace = (BlockHitResult) pick;
 		BlockEntity blockEntity = player.level.getBlockEntity(blockTrace.getBlockPos());
-
 		if (blockEntity == null) {
-			ctx.getSource().sendSuccess(new TextComponent("No RF Screen block found"), false);
+			ctx.getSource().sendSuccess(Component.literal("No RF Screen block found"), false);
 			return 0;
 		}
 
-		CompoundTag tileData = blockEntity.save(new CompoundTag());
-		if (!tileData.contains("id") && !tileData.getString("id").equals("rftoolsutility:creative_screen") && !tileData.getString("id").equals("rftoolsutility:screen")) {
-			ctx.getSource().sendSuccess(new TextComponent("Tile is not a RF Screen"), false);
+		CompoundTag tileData = blockEntity.saveWithId();
+		if (!tileData.contains("id")
+				&& !tileData.getString("id").equals("rftoolsutility:creative_screen")
+				&& !tileData.getString("id").equals("rftoolsutility:screen")) {
+			ctx.getSource().sendSuccess(Component.literal("Tile is not a RF Screen"), false);
 			return 0;
 		}
 
 		if (!tileData.contains("Items")) {
-			ctx.getSource().sendSuccess(new TextComponent("Invalid screen tile"), false);
+			ctx.getSource().sendSuccess(Component.literal("Invalid screen tile"), false);
 			return 0;
 		}
 
-		String screenText = tileData.getList("Items", Constants.NBT.TAG_COMPOUND).stream()
+		String screenText = tileData.getList("Items", Tag.TAG_COMPOUND).stream()
 				.filter(e -> ((CompoundTag) e).getCompound("tag").contains("text"))
 				.map(e -> ((CompoundTag) e).getCompound("tag").getString("text"))
 				.collect(Collectors.joining("\n"));

@@ -1,8 +1,8 @@
 package dev.ftb.mods.ftbbanners.net;
 
+import dev.architectury.networking.simple.MessageType;
+import dev.architectury.networking.simple.SimpleNetworkManager;
 import dev.ftb.mods.ftbbanners.FTBBanners;
-import me.shedaniel.architectury.networking.simple.MessageType;
-import me.shedaniel.architectury.networking.simple.SimpleNetworkManager;
 
 public interface FTBBannersNet {
 	SimpleNetworkManager NET = SimpleNetworkManager.create(FTBBanners.MOD_ID);
