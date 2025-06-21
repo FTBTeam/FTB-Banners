@@ -1,36 +1,24 @@
 plugins {
-	id "dev.architectury.loom" version "0.7.2-SNAPSHOT"
+	id "dev.architectury.loom" version "1.10-SNAPSHOT"
 	id 'maven-publish'
-	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "me.modmuss50.mod-publish-plugin" version "0.8.4"
 }
-
-apply from: 'https://files.latmod.com/public/markdown-git-changelog.gradle'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-def ENV = System.getenv()
-version = "${mod_version}-build.${ENV.GITHUB_RUN_NUMBER ?: 9999}"
-archivesBaseName = project.archives_base_name
+version = mod_version
 group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+apply from: 'https://raw.githubusercontent.com/FTBTeam/mods-meta/main/gradle/changelog.gradle'
+apply from: "https://raw.githubusercontent.com/FTBTeam/mods-meta/main/gradle/publishing.gradle"
 
 loom {
 	silentMojangMappingsLicense()
-
-	mixinConfigs = [
-	]
-
-	useFabricMixin = true
-
-	dataGen {
-		mod project.mod_id
-	}
-
-	launches {
-		data {
-			arg "--existing", file("src/main/resources").absolutePath
-		}
-	}
 }
 
 repositories {
@@ -49,9 +37,8 @@ repositories {
 	}
 
 	maven {
-		url "https://maven.saps.dev/minecraft"
+		url "https://maven.ftb.dev/releases"
 		content {
-			includeGroup "dev.latvian.mods"
 			includeGroup "dev.ftb.mods"
 		}
 	}
@@ -59,15 +46,15 @@ repositories {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings minecraft.officialMojangMappings()
+	mappings loom.officialMojangMappings()
 	forge "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 	modImplementation "curse.maven:game-stages-268655:${gamestages_file}"
-	modRuntime "curse.maven:bookshelf-228525:${gamestages_bookshelf_file}"
-	modRuntime "curse.maven:rftools-base-326041:3206945"
-	modRuntime "curse.maven:mcjtylib-233105:3236516"
-	modRuntime "curse.maven:rftools-builder-347706:3302323"
-	modRuntime "curse.maven:rftools-storage-350006:3302324"
-	modRuntime "curse.maven:rftools-utility-342466:3310447"
+	modRuntimeOnly "curse.maven:bookshelf-228525:${gamestages_bookshelf_file}"
+	modRuntimeOnly "curse.maven:rftools-base-326041:3206945"
+	modRuntimeOnly "curse.maven:mcjtylib-233105:3236516"
+	modRuntimeOnly "curse.maven:rftools-builder-347706:3302323"
+	modRuntimeOnly "curse.maven:rftools-storage-350006:3302324"
+	modRuntimeOnly "curse.maven:rftools-utility-342466:3310447"
 	modImplementation "dev.ftb.mods:ftb-library-forge:${ftblibrary_version}"
 	modImplementation "me.shedaniel:architectury-forge:${arch_version}"
 }
@@ -110,18 +97,10 @@ jar {
 	}
 }
 
-/*
-remapJar {
-	input.set shadowJar.archiveFile
-	dependsOn shadowJar
-	archiveBaseName.set "${rootProject.mod_name}-${project.name}"
-	archiveClassifier.set null
-}
-*/
-
 publishing {
 	publications {
 		mavenForge(MavenPublication) {
+			version = ftbPublishing.mavenVersion
 			artifactId = rootProject.archivesBaseName
 			artifact(remapJar) {
 				classifier null
@@ -133,33 +112,40 @@ publishing {
 	}
 
 	repositories {
-		if (ENV.SAPS_TOKEN) {
+		if (ftbPublishing.ftbToken) {
 			maven {
-				url "https://maven.saps.dev/minecraft"
+				url ftbPublishing.ftbURL
 				credentials {
-					username = "ftb"
-					password = "${ENV.SAPS_TOKEN}"
+					username = ftbPublishing.ftbUser
+					password = ftbPublishing.ftbToken
 				}
 			}
 		}
 	}
 }
 
-if (ENV.CURSEFORGE_KEY) {
+publishMods {
+	def CFToken = providers.environmentVariable("CURSEFORGE_KEY");
+
+	dryRun = !CFToken.isPresent()
+	displayName = "FTB Banners ${project.version}"
+	modLoaders.add("forge")
+
+	changelog = createChangelog(project)
+	file = remapJar.archiveFile
+	version = project.version // Pretty sure it defaults to this
+
+	def tag = providers.environmentVariable("TAG").getOrElse("release")
+	type = tag.endsWith("-beta") ? BETA : (tag.endsWith("-alpha") ? ALPHA : STABLE)
+
 	curseforge {
-		apiKey = ENV.CURSEFORGE_KEY
-		project {
-			id = project.curseforge_id
-			releaseType = "release"
-			addGameVersion "Forge"
-			addGameVersion "1.16.5"
-			mainArtifact(remapJar.archivePath)
-			relations {
-				requiredDependency 'ftb-library-forge'
-				optionalDependency 'game-stages'
-			}
-			changelog = getGitChangelog
-			changelogType = 'markdown'
-		}
+		accessToken = CFToken.orElse("missing")
+		projectId = project.curseforge_id
+		minecraftVersions.add(project.minecraft_version)
+		javaVersions.add(JavaVersion.VERSION_1_8)
+
+		requires("ftb-library-forge")
+		requires("architectury-forge")
+		optional("game-stages")
 	}
 }
