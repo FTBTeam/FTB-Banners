@@ -145,7 +145,7 @@ publishMods {
 		javaVersions.add(JavaVersion.VERSION_1_8)
 
 		requires("ftb-library-forge")
-		requires("architectury-forge")
+		requires("architectury-api")
 		optional("game-stages")
 	}
 }
